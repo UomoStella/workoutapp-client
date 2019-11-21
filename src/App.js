@@ -10,6 +10,7 @@ import { getCurrentUser } from './until/APIUtils';
 import Signup from './components/signup/Signup';
 import { Layout, notification } from 'antd';
 import { ACCESS_TOKEN } from './constants';
+import Userdetails from './components/userdetails/Userdetails';
 
 
 const Footer = Layout.Footer;
@@ -102,6 +103,8 @@ class App extends Component {
                 <Route path="/signup" component={Signup}></Route>
                 <Route path="/users/:username" 
                   render={(props) => <Profile onLoadCurrentUser={this.loadCurrentUser} isAuthenticated={this.state.isAuthenticated} currentUser={this.state.currentUser} {...props}  />}/>
+                <Route path="/user/details"  render={(props) => <Userdetails isAuthenticated={this.state.isAuthenticated} {...props} />}/>
+
                 <Route component={NotFound}></Route>
               </Switch>
             </div>
