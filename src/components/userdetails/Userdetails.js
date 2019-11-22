@@ -157,32 +157,13 @@ class UserdetailsForm extends Component {
     componentDidMount() {
         this.loadUserProfile();
     }
-
-
-    handleChange = info => {
-        if (info.file.status === 'uploading') {
-          this.setState({ loading: true });
-          return;
-        }
-        if (info.file.status === 'done') {
-          // Get this url from response in real world.
-          getBase64(info.file.originFileObj, imageUrl =>
-            this.setState({
-              imageUrl,
-              loading: false,
-            }),
-          );
-        }
-      };
     
-      normFile = e => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-          return e;
-        }
-        return e && e.fileList;
+    fileChange = e => {
+        this.props.form.setFieldsValue({
+            image: e.target.files[0]
+        });
       };
-      
+
 
     render() {       
         if(this.state.isLoading) {
@@ -197,35 +178,10 @@ class UserdetailsForm extends Component {
             return (<ServerError />);
         }
 
-
-        const uploadButton = (
-            <div>
-              <Icon type={this.state.loading ? 'loading' : 'plus'} />
-              <div className="ant-upload-text">Upload</div>
-            </div>
-          );
-          const { imageUrl } = this.state;
-
-          const { uploading, fileList } = this.state;
-          const props = {
-            onRemove: file => {
-                this.props.form.setFieldsValue({
-                    image: null,
-                });
-              return false;
-            },
-            beforeUpload: file => {
-                this.props.form.setFieldsValue({
-                    image: file,
-                });
-              return false;
-            },
-            fileList,
-          };
-
-          const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
 
         return (
+            // enctype="multipart/form-data"
             <Form onSubmit={this.handleSubmit}>
 
                 <FormItem>
@@ -293,32 +249,12 @@ class UserdetailsForm extends Component {
                     )}
                 </FormItem>
 
-                <Form.Item>
-                    {getFieldDecorator('image', {
-                    valuePropName: 'file',
-                    initialValue: this.state.image.value
-                })(
-                    <Upload {...props}>
-                    <Button>
-                        <Icon type="upload" /> Select File
-                    </Button>
-                    </Upload>
 
-
-                    // <Upload
-                    //     name="avatar"
-                    //     listType="picture-card"
-                    //     className="avatar-uploader"
-                    //     showUploadList={false}
-                    //     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    //     beforeUpload={beforeUpload}
-                    //     onChange={this.handleChange}
-                    // >
-                    //     {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-                    // </Upload>
-                )}
-                </Form.Item>
-
+                <input 
+                    type="file"
+                    name="image"
+                    onChange={this.fileChange}
+                />
                 
                 <FormItem>
                     <Button type="primary" htmlType="submit" size="large" className="login-form-button">Сохранить</Button>
@@ -330,23 +266,23 @@ class UserdetailsForm extends Component {
 }
 
 
-function getBase64(img, callback) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
+// function getBase64(img, callback) {
+//     const reader = new FileReader();
+//     reader.addEventListener('load', () => callback(reader.result));
+//     reader.readAsDataURL(img);
+//   }
   
-  function beforeUpload(file) {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  }
+//   function beforeUpload(file) {
+//     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+//     if (!isJpgOrPng) {
+//       message.error('You can only upload JPG/PNG file!');
+//     }
+//     const isLt2M = file.size / 1024 / 1024 < 2;
+//     if (!isLt2M) {
+//       message.error('Image must smaller than 2MB!');
+//     }
+//     return isJpgOrPng && isLt2M;
+//   }
 
 
 export default Userdetails;
