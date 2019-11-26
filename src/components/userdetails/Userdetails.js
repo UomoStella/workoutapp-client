@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { getUserDetails } from '../../until/APIUtils';
-import { Tabs, Button, Radio, Form, Input, Upload, Icon, message  } from 'antd';
+import { getUserDetails, userDetailsPOST } from '../../until/APIUtils';
+import { Tabs, Button, Radio, Form, Input, Upload, Icon, message, notification  } from 'antd';
 import './Userdetails.css';
 import ServerError  from '../../error/ServerError';
 import LoadingIndicator from '../LoadingIndicator';
@@ -52,7 +52,8 @@ class UserdetailsForm extends Component {
             },
             email: {
                 value: ''
-            }, 
+            },
+            file: null,
             isLoading: false,
             serverError: false,
             notFound: false,
@@ -64,27 +65,39 @@ class UserdetailsForm extends Component {
 
 
     handleSubmit(event) {
-        event.preventDefault();   
+        event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // const loginRequest = Object.assign({}, values);
-                // login(loginRequest)
-                // .then(response => {
-                //     localStorage.setItem(ACCESS_TOKEN, response.accessToken);
-                //     this.props.onLogin();
-                // }).catch(error => {
-                //     if(error.status === 401) {
-                //         notification.error({
-                //             message: 'Polling App',
-                //             description: 'Лоигн или пароль введены неверно. Пожалуйста, попробуйте еще раз!'
-                //         });                    
-                //     } else {
-                //         notification.error({
-                //             message: 'Polling App',
-                //             description: error.message || 'Извините произошла ошибка. Пожалуйста, попробуйте еще раз!'
-                //         });                                            
-                //     }
-                // });
+                const objectValues = Object.assign({}, values);
+
+                const userDetailsRequest = {
+                  firstName: objectValues.firstName,
+                  lastName: objectValues.lastName,
+                  middleName: objectValues.middleName,
+                  gender: objectValues.gender,
+                  height: objectValues.height,
+                  weight: objectValues.weight,
+                  image: objectValues.image,
+                  file: this.state.file
+                }
+
+
+                
+
+                userDetailsPOST(userDetailsRequest)
+                .then(response => {
+                    this.props.history.push("/");
+                }).catch(error => {
+                    if(error.status === 401) {
+                        this.props.handleLogout('/login', 'error', 'You have been logged out. Please login create poll.');    
+                    } else {
+                        notification.error({
+                            message: 'Polling App',
+                            description: error.message || 'Sorry! Something went wrong. Please try again!'
+                        });              
+                    }
+                });
+            
             }
         });
     }
@@ -131,9 +144,9 @@ class UserdetailsForm extends Component {
                     },
                     email: {
                         value: response.email
-                    }, 
+                    },
                     isLoading: false,
-                    notFound: false, 
+                    notFound: false,
                     serverError: false
                 })
             }).catch(error => {
@@ -148,28 +161,29 @@ class UserdetailsForm extends Component {
                         serverError: true,
                         notFound: false,
                         isLoading: false
-                    });        
+                    });
                 }
-            });  
-        }      
+            });
+        }
     }
 
     componentDidMount() {
         this.loadUserProfile();
     }
-    
+
     fileChange = e => {
-        this.props.form.setFieldsValue({
-            image: e.target.files[0]
-        });
+        this.setState({
+          file: e.target.files[0]
+        })
+
       };
 
 
-    render() {       
+    render() {
         if(this.state.isLoading) {
             return <LoadingIndicator/>
           }
-        
+
         if(this.state.notFound) {
             return <NotFound />;
         }
@@ -188,10 +202,10 @@ class UserdetailsForm extends Component {
                     {getFieldDecorator('lastName', {
                         initialValue: this.state.lastName.value
                     })(
-                    <Input 
+                    <Input
                         // prefix={<Icon type="user" />}
                         size="large"
-                        placeholder="Фамилия"/>    
+                        placeholder="Фамилия"/>
                     )}
                 </FormItem>
 
@@ -199,20 +213,20 @@ class UserdetailsForm extends Component {
                     {getFieldDecorator('firstName', {
                         initialValue: this.state.firstName.value
                     })(
-                    <Input 
+                    <Input
                         // prefix={<Icon type="user" />}
                         size="large"
-                        placeholder="Имя"/>    
+                        placeholder="Имя"/>
                     )}
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('middleName', {
                         initialValue: this.state.middleName.value
                     })(
-                    <Input 
+                    <Input
                         // prefix={<Icon type="user" />}
                         size="large"
-                        placeholder="Отчество"/>    
+                        placeholder="Отчество"/>
                     )}
                 </FormItem>
 
@@ -231,10 +245,10 @@ class UserdetailsForm extends Component {
                     {getFieldDecorator('height', {
                         initialValue: this.state.height.value
                     })(
-                    <Input 
+                    <Input
                         // prefix={<Icon type="user" />}
                         size="large"
-                        placeholder="Рост"/>    
+                        placeholder="Рост"/>
                     )}
                 </FormItem>
 
@@ -242,26 +256,26 @@ class UserdetailsForm extends Component {
                     {getFieldDecorator('weight', {
                         initialValue: this.state.weight.value
                     })(
-                    <Input 
+                    <Input
                         // prefix={<Icon type="user" />}
                         size="large"
-                        placeholder="Вес"/>    
+                        placeholder="Вес"/>
                     )}
                 </FormItem>
 
 
-                <input 
+                <input
                     type="file"
                     name="image"
                     onChange={this.fileChange}
                 />
-                
+
                 <FormItem>
                     <Button type="primary" htmlType="submit" size="large" className="login-form-button">Сохранить</Button>
                 </FormItem>
             </Form>
         );
-    
+
     }
 }
 
@@ -271,7 +285,7 @@ class UserdetailsForm extends Component {
 //     reader.addEventListener('load', () => callback(reader.result));
 //     reader.readAsDataURL(img);
 //   }
-  
+
 //   function beforeUpload(file) {
 //     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
 //     if (!isJpgOrPng) {
