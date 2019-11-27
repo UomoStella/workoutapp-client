@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-// <<<<<<< HEAD
-import { getUserDetails } from '../../until/APIUtils';
 import { FileService } from '../../service/FileService';
 import { Tabs, Button, Radio, Form, Input, Upload, notification  } from 'antd';
-// =======
 import { getUserDetails, userDetailsPOST } from '../../until/APIUtils';
 import { Tabs, Button, Radio, Form, Input, Upload, Icon, message, notification  } from 'antd';
-// >>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
 import './Userdetails.css';
 import ServerError  from '../../error/ServerError';
 import LoadingIndicator from '../LoadingIndicator';
@@ -29,7 +25,6 @@ class UserdetailsForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-// <<<<<<< HEAD
             firstName: '',
             lastName: '',
             middleName: '',
@@ -41,39 +36,6 @@ class UserdetailsForm extends Component {
             username: '',
             email: '',
             selectedFile: null, 
-// =======
-            firstName: {
-                value: ''
-            },
-            lastName: {
-                value: ''
-            },
-            middleName: {
-                value: ''
-            },
-            gender: {
-                value:''
-            },
-            height: {
-                value: null
-            },
-            weight: {
-                value: null
-            },
-            image: {
-                value: null
-            },
-            name: {
-                value: ''
-            },
-            username: {
-                value: ''
-            },
-            email: {
-                value: ''
-            },
-            file: null,
-// >>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
             isLoading: false,
             isAuthorization: false,
             serverError: false,
@@ -89,8 +51,6 @@ class UserdetailsForm extends Component {
 
 
     handleSubmit(event) {
-// <<<<<<< HEAD
-        // event.preventDefault();   
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log(this.state.selectedFile);
@@ -102,19 +62,8 @@ class UserdetailsForm extends Component {
                     gender: userDetails.gender,
                     height: userDetails.height,
                     weight: userDetails.weight,
-                    file: this.state.selectedFile,
                 };
             
-                const data = new FormData();
-                data.append('firstName', userDetails.firstName);
-                data.append('lastName', userDetails.lastName);
-                data.append('middleName', userDetails.middleName);
-                data.append('gender', userDetails.gender);
-                data.append('height', userDetails.height);
-                data.append('weight', userDetails.weight);
-                // data.append('file', this.state.selectedFile);
-
-
                 this.fileService.uploadUserDetailsToServer(userDetailsRequest)
                 .then(response => {
                     notification.success({
@@ -127,44 +76,7 @@ class UserdetailsForm extends Component {
                         message: 'Polling App',
                         description: error.message || 'Sorry! Something went wrong. Please try again!'
                     });
-                });
-                // userDetailsPOST(userDetailsRequest)
-                
-// =======
-        event.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                const objectValues = Object.assign({}, values);
-
-                const userDetailsRequest = {
-                  firstName: objectValues.firstName,
-                  lastName: objectValues.lastName,
-                  middleName: objectValues.middleName,
-                  gender: objectValues.gender,
-                  height: objectValues.height,
-                  weight: objectValues.weight,
-                  image: objectValues.image,
-                  file: this.state.file
-                }
-
-
-                
-
-                userDetailsPOST(userDetailsRequest)
-                .then(response => {
-                    this.props.history.push("/");
-                }).catch(error => {
-                    if(error.status === 401) {
-                        this.props.handleLogout('/login', 'error', 'You have been logged out. Please login create poll.');    
-                    } else {
-                        notification.error({
-                            message: 'Polling App',
-                            description: error.message || 'Sorry! Something went wrong. Please try again!'
-                        });              
-                    }
-                });
-            
-// >>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
+                });    
             }
         });
     }
@@ -172,21 +84,20 @@ class UserdetailsForm extends Component {
     loadUserProfile() {
         this.setState({
             isLoading: true
+
         });
-        
-        getUserDetails()
-        .then(response => {
+        getUserDetails().then(response => {
             this.setState({
-                firstName: {value: response.firstName},
-                lastName: {value: response.lastName},
-                middleName: {value: response.middleName},
-                gender: {value: response.gender},
-                height: {value: response.height},
-                weight: {value: response.weight},
-                image: {value: response.image},
-                name: {value: response.name},
-                username: {value: response.username},
-                email: {value: response.email}, 
+                firstName: response.firstName,
+                lastName: response.lastName,
+                middleName: response.middleName,
+                gender: response.gender,
+                height: response.height,
+                weight: response.weight,
+                image: response.image,
+                name: response.name,
+                username: response.username,
+                email: response.email, 
                 isLoading: false,
                 notFound: false, 
                 serverError: false
@@ -194,7 +105,6 @@ class UserdetailsForm extends Component {
         }).catch(error => {               
             if(error.status === 404) {
                 this.setState({
-// <<<<<<< HEAD
                     notFound: true,
                     isLoading: false,
                     serverError: false
@@ -207,59 +117,6 @@ class UserdetailsForm extends Component {
                 });        
             }
         });  
-    
-// =======
-                    firstName: {
-                        value: response.firstName
-                    },
-                    lastName: {
-                        value: response.lastName
-                    },
-                    middleName: {
-                        value: response.middleName
-                    },
-                    gender: {
-                        value: response.gender
-                    },
-                    height: {
-                        value: response.height
-                    },
-                    weight: {
-                        value: response.weight
-                    },
-                    image: {
-                        value: response.image
-                    },
-                    name: {
-                        value: response.name
-                    },
-                    username: {
-                        value: response.username
-                    },
-                    email: {
-                        value: response.email
-                    },
-                    isLoading: false,
-                    notFound: false,
-                    serverError: false
-                })
-            }).catch(error => {
-                if(error.status === 404) {
-                    this.setState({
-                        notFound: true,
-                        isLoading: false,
-                        serverError: false
-                    });
-                } else {
-                    this.setState({
-                        serverError: true,
-                        notFound: false,
-                        isLoading: false
-                    });
-                }
-            });
-        }
->>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
     }
 
     componentDidMount() {
@@ -268,7 +125,6 @@ class UserdetailsForm extends Component {
         }
         this.loadUserProfile();
     }
-<<<<<<< HEAD
     
     handleUploadFile = (event) => {
         this.setState({
@@ -297,27 +153,12 @@ class UserdetailsForm extends Component {
             }
         });
     };
-=======
-
-    fileChange = e => {
-        this.setState({
-          file: e.target.files[0]
-        })
-
-      };
->>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
-
 
     render() {
         if(this.state.isLoading) {
             return <LoadingIndicator/>
-<<<<<<< HEAD
         }
-        
-=======
-          }
 
->>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
         if(this.state.notFound) {
             return <NotFound />;
         }

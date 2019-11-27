@@ -116,8 +116,6 @@ export function getUserProfile(username) {
     });
 }
 
-<<<<<<< HEAD
-
 export function setFileToServer(formData) {
     return requestFile({
         url: API_BASE_URL + "/upload",
@@ -151,12 +149,3 @@ const requestFile = (options) => {
         })
     );
 };
-=======
-export function userDetailsPOST(userDetailsRequest){
-    return requestWithFile({
-        url: API_BASE_URL + "/user/details",
-        method: 'POST',
-        body: JSON.stringify(userDetailsRequest)
-    });
-}
->>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
