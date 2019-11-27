@@ -14,7 +14,7 @@ class Login extends Component {
             <div className="login-container">
                 <h1 className="page-title">Login</h1>
                 <div className="login-content">
-                    <AntWrappedLoginForm onLogin={this.props.onLogin} />
+                    <AntWrappedLoginForm handleMessage={this.props.handleMessage} onLogin={this.props.onLogin} />
                 </div>
             </div>
         );
@@ -25,6 +25,12 @@ class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidMount() {
+        if(localStorage.getItem(ACCESS_TOKEN)) {
+            this.props.handleMessage('/', 'error', 'Пользователь уже авторизован.'); 
+        }
     }
 
     handleSubmit(event) {

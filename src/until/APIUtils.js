@@ -57,6 +57,16 @@ export function signup(signupRequest) {
     });
 }
 
+export function userDetailsPOST(userDetails) {
+    return request({
+        url: API_BASE_URL + "/user/details",
+        method: 'POST',
+        body: JSON.stringify(userDetails)
+    });
+}
+
+
+
 export function getUserDetails() {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");
@@ -82,3 +92,38 @@ export function getUserProfile(username) {
         method: 'GET'
     });
 }
+
+
+export function setFileToServer(formData) {
+    return requestFile({
+        url: API_BASE_URL + "/upload",
+        method: 'POST',
+        body: formData
+    });
+}
+
+
+
+const requestFile = (options) => {
+    const headers = new Headers({
+        'Content-Type': 'multipart/form-data',
+    })
+    
+    
+    if(localStorage.getItem(ACCESS_TOKEN)) {
+        headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
+    }
+
+    const defaults = {headers: headers};
+    options = Object.assign({}, defaults, options);
+
+    return fetch(options.url, options)
+    .then(response => 
+        response.json().then(json => {
+            if(!response.ok) {
+                return Promise.reject(json);
+            }
+            return json;
+        })
+    );
+};

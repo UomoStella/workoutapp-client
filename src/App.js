@@ -30,6 +30,7 @@ class App extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.loadCurrentUser = this.loadCurrentUser.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
 
     notification.config({
       placement: 'topRight',
@@ -60,6 +61,8 @@ class App extends Component {
     this.loadCurrentUser();
   }
 
+
+  
   handleLogin() {
     notification.success({
       message: 'Сообщение',
@@ -84,34 +87,55 @@ class App extends Component {
       description: description,
     });
   }
+
+
+  handleMessage(redirectTo="/", notificationType="success", description="Ошибка.") {
+    
+    this.props.history.push(redirectTo);
+    
+    notification[notificationType]({
+      message: 'Сообщение',
+      description: description,
+    });
+  }
   
 
   render(){
     if(this.state.isLoading) {
-      return <LoadingIndicator />
-    }
-    return (
-      <Layout>
-        <AppHeader isAuthenticated={this.state.isAuthenticated} 
-            currentUser={this.state.currentUser} 
-            onLogout={this.handleLogout} />
-        <Content>
-            <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
-              <Switch>      
-                <Route exact path="/"/>
-                <Route path="/login" render={(props) => <Login onLogin={this.handleLogin} {...props} />}></Route>
-                <Route path="/signup" component={Signup}></Route>
-                <Route path="/users/:username" 
-                  render={(props) => <Profile onLoadCurrentUser={this.loadCurrentUser} isAuthenticated={this.state.isAuthenticated} currentUser={this.state.currentUser} {...props}  />}/>
-                <Route path="/user/details"  render={(props) => <Userdetails isAuthenticated={this.state.isAuthenticated} {...props} />}/>
+      return <LoadingIndicator />;
+    }else{
 
-                <Route component={NotFound}></Route>
-              </Switch>
-            </div>
-        </Content>
-        {/* <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer> */}
-      </Layout>
-    );
+      return (
+        <Layout>
+          <AppHeader isAuthenticated={this.state.isAuthenticated} 
+              currentUser={this.state.currentUser} 
+              onLogout={this.handleLogout} />
+      { 
+      this.state.isLoading ? (
+          <LoadingIndicator />    
+        ): 
+        <Content>
+              <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
+                <Switch>      
+                  <Route exact path="/"/>
+                  <Route path="/login" render={(props) => <Login handleMessage={this.handleMessage} onLogin={this.handleLogin} {...props} />}></Route>
+                  <Route path="/signup" component={Signup}></Route>
+                  <Route path="/users/:username" 
+                    render={(props) => <Profile onLoadCurrentUser={this.loadCurrentUser} isAuthenticated={this.state.isAuthenticated} currentUser={this.state.currentUser} {...props}  />}/>
+                  {/* <Route path="/user/details"  render={(props) => }/> */}
+                  <Route path="/user/details" render={(props) => <Userdetails handleLogout={this.handleLogout} {...props} />}></Route>
+
+
+                  <Route component={NotFound}></Route>
+                </Switch>
+              </div>
+          </Content>
+        }
+
+          {/* <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer> */}
+        </Layout>
+      );
+  }
   }
 
 }
