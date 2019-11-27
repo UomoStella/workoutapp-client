@@ -4,7 +4,7 @@ const request = (options) => {
     const headers = new Headers({
         'Content-Type': 'application/json',
     })
-    
+
     if(localStorage.getItem(ACCESS_TOKEN)) {
         headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
     }
@@ -13,7 +13,30 @@ const request = (options) => {
     options = Object.assign({}, defaults, options);
 
     return fetch(options.url, options)
-    .then(response => 
+    .then(response =>
+        response.json().then(json => {
+            if(!response.ok) {
+                return Promise.reject(json);
+            }
+            return json;
+        })
+    );
+};
+
+const requestWithFile = (options) => {
+    const headers = new Headers({
+        'Content-Type': 'multipart/form-data',
+    })
+
+    if(localStorage.getItem(ACCESS_TOKEN)) {
+        headers.append('Authorization', 'Bearer ' + localStorage.getItem(ACCESS_TOKEN))
+    }
+
+    const defaults = {headers: headers};
+    options = Object.assign({}, defaults, options);
+
+    return fetch(options.url, options)
+    .then(response =>
         response.json().then(json => {
             if(!response.ok) {
                 return Promise.reject(json);
@@ -93,6 +116,7 @@ export function getUserProfile(username) {
     });
 }
 
+<<<<<<< HEAD
 
 export function setFileToServer(formData) {
     return requestFile({
@@ -127,3 +151,12 @@ const requestFile = (options) => {
         })
     );
 };
+=======
+export function userDetailsPOST(userDetailsRequest){
+    return requestWithFile({
+        url: API_BASE_URL + "/user/details",
+        method: 'POST',
+        body: JSON.stringify(userDetailsRequest)
+    });
+}
+>>>>>>> 54409588930ef60a33de42f91f4ee67056c3211f
