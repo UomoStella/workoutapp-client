@@ -4,6 +4,7 @@ import './App.css';
 import AppHeader from './components/AppHeader';
 import Login from './components/login/Login';
 import Profile from './components/profile/Profile';
+import Exercises from './components/exercises/Exercises';
 import NotFound from './error/NotFound';
 import LoadingIndicator from './components/LoadingIndicator';
 import { getCurrentUser } from './until/APIUtils';
@@ -54,6 +55,7 @@ class App extends Component {
       this.setState({
         isLoading: false
       });  
+      localStorage.removeItem(ACCESS_TOKEN);
     });
   }
 
@@ -125,6 +127,9 @@ class App extends Component {
                   {/* <Route path="/user/details"  render={(props) => }/> */}
                   <Route path="/user/details" render={(props) => <Userdetails handleLogout={this.handleLogout} {...props} />}></Route>
 
+                  <Route path="/exercises/edit/:exercisesid?" render={(props) => <Exercises handleLogout={this.handleLogout} {...props} />}></Route>
+                  {/* <Route path="/exercises/create/:exercisesid?" render={(props) => <Exercises {...props}  />}> */}
+                {/* </Route> */}
 
                   <Route component={NotFound}></Route>
                 </Switch>

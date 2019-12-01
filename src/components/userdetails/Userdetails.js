@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { FileService } from '../../service/FileService';
-import { Tabs, Button, Radio, Form, Input, Upload, notification  } from 'antd';
 import { getUserDetails, userDetailsPOST } from '../../until/APIUtils';
-import { Tabs, Button, Radio, Form, Input, Upload, Icon, message, notification  } from 'antd';
+import { Button, Radio, Form, Input, Upload, Icon, message, notification  } from 'antd';
 import './Userdetails.css';
 import ServerError  from '../../error/ServerError';
 import LoadingIndicator from '../LoadingIndicator';

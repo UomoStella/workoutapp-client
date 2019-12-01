@@ -28,6 +28,7 @@ class LoginForm extends Component {
     }
 
     componentDidMount() {
+        console.log(localStorage.getItem(ACCESS_TOKEN));
         if(localStorage.getItem(ACCESS_TOKEN)) {
             this.props.handleMessage('/', 'error', 'Пользователь уже авторизован.'); 
         }

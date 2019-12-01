@@ -26,11 +26,6 @@ class Service {
         baseURL: API_BASE_URL,
         timeout: 10000,
         headers: headers
-        // {
-        //     'Content-Type': 'application/json',
-        //     'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
-        // }
-            // headers,
       });
     }
     return this.serviceInstance;
