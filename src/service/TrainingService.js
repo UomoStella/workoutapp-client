@@ -12,11 +12,15 @@ export class TrainingService {
         return service.getRestClient().post("/training/exercises/edit", JSON.stringify(data) );
     }
 
-    getSubtypeTraining(id){
-        return service.getRestClient().get("/training/subtypetraining/all", { params: { typeid: id}});
+    getSubtypeTrainingById(id){
+        return service.getRestClient().get("/training/subtypetraining/all", { params: { typeid : id}});
     }
     getSubtypeTraining(){
         return service.getRestClient().get("/training/subtypetraining/all");
+    }
+
+    getExercisesMediaById(id){
+        return service.getRestClient().get("/training/exercises/media", { params: { id : id}});
     }
 
     

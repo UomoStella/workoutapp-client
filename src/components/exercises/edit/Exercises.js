@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { TrainingService } from '../../service/TrainingService';
+import { TrainingService } from '../../../service/TrainingService';
 import { Button, Select, Form, Input,  Checkbox, message, notification , Switch } from 'antd';
 import './Exercises.css';
-import ServerError  from '../../error/ServerError';
-import LoadingIndicator from '../LoadingIndicator';
-import NotFound from '../../error/NotFound';
-import { ACCESS_TOKEN } from '../../constants';
+import ServerError  from '../../../error/ServerError';
+import LoadingIndicator from '../../LoadingIndicator';
+import NotFound from '../../../error/NotFound';
+import { ACCESS_TOKEN } from '../../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -20,7 +20,7 @@ class Exercises extends Component {
 
         const AntWrappedLoginForm = Form.create()(ExercisesForm)
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout} exercisesId={exercisesid}  />
+            <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} exercisesId={exercisesid}  />
         );
     }
 }
@@ -69,9 +69,10 @@ class ExercisesForm extends Component {
       };
 
     handleSubmit(event) {
+        event.preventDefault();
+
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(this.state.selectedFile);
                 const exercises = Object.assign({}, values);
 
                 const exercisesRequest = {
@@ -83,25 +84,16 @@ class ExercisesForm extends Component {
                     subtypeTrainingId: exercises.subtypeTrainingId,
                     muscleGroups: exercises.muscleGroups
                 };
-
-                console.log(exercisesRequest);
             
                 this.trainingService.postCreateExercisesCreate(exercisesRequest)
                 .then(response => {
-                    notification.success({
-                        message: 'Polling App',
-                        description: "Данные успешно сохранены",
-                    });          
-                    this.props.history.push("/");
+                    this.props.handleMessage('/', 'success', 'Данные успешно сохранены');
                 }).catch(error => {
                     notification.error({
                         message: 'Polling App',
                         description: error.message || 'Sorry! Something went wrong. Please try again!'
                     });
-                    event.preventDefault();
                 });    
-            }else{
-                event.preventDefault();
             }
         });
     }
@@ -126,12 +118,9 @@ class ExercisesForm extends Component {
                     typeTrainingResponseList : response.data.typeTrainingResponseList, 
                     muscleGroupsResponseList : response.data.muscleGroupsResponseList, 
                     isLoading : false
-                })  
-                
-                
-                
+                })        
 
-
+                this.handleProvinceChange(response.data.exercisesResponse.typeTrainingId);
             }else{
                 this.setState({
                     typeTrainingResponseList : response.data.typeTrainingResponseList, 
@@ -139,8 +128,6 @@ class ExercisesForm extends Component {
                     isLoading : false
                 })  
             }
-            
-            // console.log(this.state.typeTrainingResponseList);
             
         }).catch(error => {
             notification.error({
@@ -161,15 +148,13 @@ class ExercisesForm extends Component {
                 });        
             }
         });    
-
     }
 
     handleProvinceChange = value => {
-    
         if(value == undefined || value == null)
             return;
 
-        this.trainingService.getSubtypeTraining(value)
+        this.trainingService.getSubtypeTrainingById(value)
         .then(response => {
             if(response.data.containerList)
                 this.setState({
@@ -190,20 +175,16 @@ class ExercisesForm extends Component {
         });    
       };
 
+
       handleMuskuleGroupChange = value => {
-        const list = [];
-
-        value.forEach((val, valIndex) => {
-            this.state.muscleGroups.forEach((valList, valListIndex) => {
-                if(valList.id == val){
-                    list.push(valList);
-                }
-
-            });
-        });
-
-        console.log(list);
-        
+        // const list = [];
+        // value.forEach((val, valIndex) => {
+        //     this.state.muscleGroups.forEach((valList, valListIndex) => {
+        //         if(valList.id == val){
+        //             list.push(valList);
+        //         }
+        //     });
+        // });        
       };
 
 
@@ -212,7 +193,6 @@ class ExercisesForm extends Component {
             this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
         }
         const exercisesId=  this.props.exercisesId;
-
         this.funcCreateExercisesCreate(exercisesId);
     }
 
@@ -234,17 +214,14 @@ class ExercisesForm extends Component {
 
         const typeTrainingResponseViews = [];
         this.state.typeTrainingResponseList.forEach((type, typeIndex) => {
-            if(this.state.typeTrainingId == type.id)
-                typeTrainingResponseViews.push(<Option defaultValue key={type.id}>{type.name}</Option>);
-            else
-                typeTrainingResponseViews.push(<Option key={type.id}>{type.name}</Option>);
-        });
+            typeTrainingResponseViews.push(<Option  key={type.id}>{type.id} {type.name}</Option>);
+          });
 
         const muscleGroupsResponseViews = [];
         this.state.muscleGroupsResponseList.forEach((type, typeIndex) => {
             muscleGroupsResponseViews.push(<Option key={type.id}>{type.name}</Option>);
         });
-
+        
 
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -279,7 +256,7 @@ class ExercisesForm extends Component {
                 <Form.Item label="Тип тренировки" hasFeedback>
                 {getFieldDecorator('typeTrainingId', {
                     initialValue: this.state.typeTrainingId,
-                    rules: [{ required: true, message: 'Выберите тип тренировки' }],
+                    rules: [{ required: true, whitespace: true, message: 'Выберите тип тренировки' }],
                 })(
                     <Select placeholder="Выберите тип тренировки"
                         onChange={this.handleProvinceChange}>
@@ -296,7 +273,7 @@ class ExercisesForm extends Component {
                 <Form.Item label="Подтип тренировки" hasFeedback>
                 {getFieldDecorator('subtypeTrainingId', {
                     initialValue: this.state.subtypeTrainingId,
-                    rules: [{ required: true, message: 'Выберите подтип тренировки' }],
+                    rules: [{ required: true,  message: 'Выберите подтип тренировки' }],
                 })(
                     <Select placeholder="Выберите подтип тренировки">
                        {!this.state.subtypeTrainingList.length == 0 ? 
@@ -319,10 +296,7 @@ class ExercisesForm extends Component {
                 })(
                 <Select
                     mode="multiple"
-                    // style={{ width: '100%' }}
                     placeholder="Выберите группу мышц"
-                    // defaultValue={['a10', 'c12']}
-
                     onChange={this.handleMuskuleGroupChange}
                 >
                        {
@@ -334,19 +308,14 @@ class ExercisesForm extends Component {
                 </Select>
                 )}
                 </Form.Item>
-                
-
-
 
                 <FormItem>
                     <Button type="primary" htmlType="submit" size="large" className="login-form-button">Сохранить</Button>
                 </FormItem>
             </Form>
         );
-
     }
 }
-
 
 
 

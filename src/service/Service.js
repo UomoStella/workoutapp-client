@@ -30,6 +30,26 @@ class Service {
     }
     return this.serviceInstance;
   }
+
+  getRestClientNoToken() {
+
+    let headers = {
+        'Content-Type': 'application/json',
+    };
+  
+    if (!this.serviceInstance) {
+      this.serviceInstance = axios.create({
+        baseURL: API_BASE_URL,
+        timeout: 10000,
+        headers: headers
+      });
+    }
+    return this.serviceInstance;
+  }
 }
+
+
+
+
 
 export default (new Service());

@@ -4,7 +4,7 @@ import './App.css';
 import AppHeader from './components/AppHeader';
 import Login from './components/login/Login';
 import Profile from './components/profile/Profile';
-import Exercises from './components/exercises/Exercises';
+import Exercises from './components/exercises/edit/Exercises';
 import NotFound from './error/NotFound';
 import LoadingIndicator from './components/LoadingIndicator';
 import { getCurrentUser } from './until/APIUtils';
@@ -12,6 +12,8 @@ import Signup from './components/signup/Signup';
 import { Layout, notification } from 'antd';
 import { ACCESS_TOKEN } from './constants';
 import Userdetails from './components/userdetails/Userdetails';
+import ExercisesMedia from './components/exercises/media/ExercisesMedia';
+
 
 
 const Footer = Layout.Footer;
@@ -127,7 +129,11 @@ class App extends Component {
                   {/* <Route path="/user/details"  render={(props) => }/> */}
                   <Route path="/user/details" render={(props) => <Userdetails handleLogout={this.handleLogout} {...props} />}></Route>
 
-                  <Route path="/exercises/edit/:exercisesid?" render={(props) => <Exercises handleLogout={this.handleLogout} {...props} />}></Route>
+                  <Route path="/exercises/edit/:exercisesid?" render={(props) => 
+                    <Exercises handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                  <Route path="/exercises/media/:exercisesid?" render={(props) => 
+                    <ExercisesMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                  
                   {/* <Route path="/exercises/create/:exercisesid?" render={(props) => <Exercises {...props}  />}> */}
                 {/* </Route> */}
 
