@@ -1,11 +1,15 @@
 import service from './Service';
 
 export class TrainingService {
-    createExercisesCreate(id){
+    getCreateExercisesCreate(id){
         if(id != null && id != undefined)
             return service.getRestClient().get("/training/exercises/edit", { params: { id: id}} );
         else
             return service.getRestClient().get("/training/exercises/edit" );
+    }
+
+    postCreateExercisesCreate(data){
+        return service.getRestClient().post("/training/exercises/edit", JSON.stringify(data) );
     }
 
     getSubtypeTraining(id){

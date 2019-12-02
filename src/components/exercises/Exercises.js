@@ -71,34 +71,39 @@ class ExercisesForm extends Component {
     handleSubmit(event) {
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // console.log(this.state.selectedFile);
-                // const userDetails = Object.assign({}, values);
-                // const userDetailsRequest = {
-                //     firstName: userDetails.firstName,
-                //     lastName: userDetails.lastName,
-                //     middleName: userDetails.middleName,
-                //     gender: userDetails.gender,
-                //     height: userDetails.height,
-                //     weight: userDetails.weight,
-                // };
+                console.log(this.state.selectedFile);
+                const exercises = Object.assign({}, values);
+
+                const exercisesRequest = {
+                    id : this.state.id,
+                    isPrivate: this.state.isPrivate,
+                    name: exercises.name,
+                    description: exercises.description,
+                    typeTrainingId: exercises.typeTrainingId,
+                    subtypeTrainingId: exercises.subtypeTrainingId,
+                    muscleGroups: exercises.muscleGroups
+                };
+
+                console.log(exercisesRequest);
             
-                // this.fileService.uploadUserDetailsToServer(userDetailsRequest)
-                // .then(response => {
-                //     notification.success({
-                //         message: 'Polling App',
-                //         description: "Данные успешно сохранены",
-                //     });          
-                //     this.props.history.push("/");
-                // }).catch(error => {
-                //     notification.error({
-                //         message: 'Polling App',
-                //         description: error.message || 'Sorry! Something went wrong. Please try again!'
-                //     });
-                // });    
+                this.trainingService.postCreateExercisesCreate(exercisesRequest)
+                .then(response => {
+                    notification.success({
+                        message: 'Polling App',
+                        description: "Данные успешно сохранены",
+                    });          
+                    this.props.history.push("/");
+                }).catch(error => {
+                    notification.error({
+                        message: 'Polling App',
+                        description: error.message || 'Sorry! Something went wrong. Please try again!'
+                    });
+                    event.preventDefault();
+                });    
+            }else{
+                event.preventDefault();
             }
         });
-        event.preventDefault();
-        // return false;
     }
       
 
@@ -107,18 +112,26 @@ class ExercisesForm extends Component {
             isLoading: true,
         });
 
-        this.trainingService.createExercisesCreate(exercisesId)
+        this.trainingService.getCreateExercisesCreate(exercisesId)
         .then(response => {
             if(response.data.exercisesResponse){
                 this.setState({
-                    id : response.data.exercisesResponse.id,
+                    id : exercisesId,
                     name: response.data.exercisesResponse.name,
                     description: response.data.exercisesResponse.description,
                     isPrivate: response.data.exercisesResponse.isPrivate,
                     typeTrainingId: response.data.exercisesResponse.typeTrainingId,
                     subtypeTrainingId: response.data.exercisesResponse.subtypeTrainingId,
-                    muscleGroups: response.data.exercisesResponse.muscleGroups
+                    muscleGroups: response.data.exercisesResponse.muscleGroups,
+                    typeTrainingResponseList : response.data.typeTrainingResponseList, 
+                    muscleGroupsResponseList : response.data.muscleGroupsResponseList, 
+                    isLoading : false
                 })  
+                
+                
+                
+
+
             }else{
                 this.setState({
                     typeTrainingResponseList : response.data.typeTrainingResponseList, 
@@ -221,7 +234,10 @@ class ExercisesForm extends Component {
 
         const typeTrainingResponseViews = [];
         this.state.typeTrainingResponseList.forEach((type, typeIndex) => {
-            typeTrainingResponseViews.push(<Option key={type.id}>{type.name}</Option>);
+            if(this.state.typeTrainingId == type.id)
+                typeTrainingResponseViews.push(<Option defaultValue key={type.id}>{type.name}</Option>);
+            else
+                typeTrainingResponseViews.push(<Option key={type.id}>{type.name}</Option>);
         });
 
         const muscleGroupsResponseViews = [];
@@ -260,9 +276,6 @@ class ExercisesForm extends Component {
                             />
                 </FormItem>
 
-                {/* subtypeTrainingId: '',
-            muscleGroupsId: '', */}
-
                 <Form.Item label="Тип тренировки" hasFeedback>
                 {getFieldDecorator('typeTrainingId', {
                     initialValue: this.state.typeTrainingId,
@@ -288,7 +301,12 @@ class ExercisesForm extends Component {
                     <Select placeholder="Выберите подтип тренировки">
                        {!this.state.subtypeTrainingList.length == 0 ? 
                             this.state.subtypeTrainingList.map(city => (
-                                <Option key={city.id}>{city.name}</Option>)
+                                (this.state.subtypeTrainingId == city.id ?
+                                    <Option defaultValue key={city.id}>{city.name}</Option>
+                                    :
+                                    <Option key={city.id}>{city.name}</Option>
+                                ))
+                                
                             ): null
                         }
                         
