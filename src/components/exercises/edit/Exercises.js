@@ -87,7 +87,7 @@ class ExercisesForm extends Component {
             
                 this.trainingService.postCreateExercisesCreate(exercisesRequest)
                 .then(response => {
-                    this.props.handleMessage('/', 'success', 'Данные успешно сохранены');
+                    this.props.handleMessage('/exercises/media/'+ this.state.id, 'success', 'Данные успешно сохранены');
                 }).catch(error => {
                     notification.error({
                         message: 'Polling App',

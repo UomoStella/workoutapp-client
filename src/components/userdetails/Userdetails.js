@@ -40,7 +40,6 @@ class UserdetailsForm extends Component {
             serverError: false,
             notFound: false,
         }
-
     
         this.loadUserProfile = this.loadUserProfile.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);

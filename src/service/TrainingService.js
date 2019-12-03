@@ -23,5 +23,7 @@ export class TrainingService {
         return service.getRestClient().get("/training/exercises/media", { params: { id : id}});
     }
 
+
+    
     
 }
