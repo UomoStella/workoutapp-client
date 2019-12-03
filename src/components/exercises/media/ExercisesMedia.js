@@ -33,6 +33,7 @@ class ExercisesMedia extends Component {
             hasVideoFile: false,
 
             isLoading: true,
+            isLoadingLinkVideo: false,
             isLoadingFile: false,
             serverError: false,
             notFound: false,
@@ -71,7 +72,7 @@ class ExercisesMedia extends Component {
                 description: "Файл успешно загружен.",
               });
 
-        }).catch(function (error) {
+        }).catch((error) => {
             notification.error({
                 message: 'Ошибка',
                 description: 'Не удалось загрузить файл!'
@@ -95,7 +96,7 @@ class ExercisesMedia extends Component {
                 return;
 
             this.setState({
-                linkVideo:  response.data,
+                videoFileLink:  response.data,
                 hasVideoFile: true,
                 isLoadingFile: false
                 
@@ -104,7 +105,7 @@ class ExercisesMedia extends Component {
                 message: 'Сообщение',
                 description: "Файл успешно загружен.",
               });
-        }).catch(function (error) {
+        }).catch((error) => {
             this.setState({
                 isLoadingFile: false
             });
@@ -129,7 +130,7 @@ class ExercisesMedia extends Component {
                 message: 'Сообщение',
                 description: "Изображение успешно удалено.",
               });
-        }).catch(function (error) {
+        }).catch((error) => {
             notification.error({
                 message: 'Ошибка',
                 description: 'Не удалось удалить файл!'
@@ -151,7 +152,7 @@ class ExercisesMedia extends Component {
                 message: 'Сообщение',
                 description: "Файл успешно удалён.",
               });
-        }).catch(function (error) {
+        }).catch((error) => {
             notification.error({
                 message: 'Ошибка',
                 description: 'Не удалось удалить файл!'
@@ -167,6 +168,11 @@ class ExercisesMedia extends Component {
 
 
     handleSaveVideoFile = (event) => {
+        this.setState({
+            isLoadingLinkVideo: true,
+        });
+
+
         const data = new FormData();
             data.append('id', this.state.id); 
             data.append('linkvideo', this.state.linkVideoInput); 
@@ -174,13 +180,17 @@ class ExercisesMedia extends Component {
         this.fileService.updateVideoLink(data).then((response) => {
             this.setState({
                 linkVideo:  this.state.linkVideoInput,
+                isLoadingLinkVideo: false,
             });
         
             notification.success({
                 message: 'Сообщение',
                 description: "Ссылка успешно изменена.",
               });
-        }).catch(function (error) {
+        }).catch((error) => {
+            this.setState({
+                isLoadingLinkVideo: false,
+            });
             notification.error({
                 message: 'Ошибка',
                 description: 'Не удалось изменить ссылку!'
@@ -347,10 +357,16 @@ class ExercisesMedia extends Component {
                                 </TabPane>
                                 
                                 <TabPane tab={<span><Icon type="youtube" /> Ссылка на видео</span>} key="3" >
-                                    {this.state.linkVideo != null && this.state.linkVideo.length != 0 ?
-                                        <VideoPlayer url={linkVideo} playing={false} />
-                                            :
-                                        null
+                                    {this.state.isLoadingLinkVideo ?
+                                        <LoadingIndicator/>
+                                        :
+                                        <div>
+                                            {this.state.linkVideo != null && this.state.linkVideo.length != 0 ?
+                                            <VideoPlayer url={linkVideo} playing={false} />
+                                                :
+                                            null
+                                            }
+                                        </div>
                                     }
                                     <input value={this.state.linkVideoInput} onChange={this.handleChangeLinkVideo}/>
                                     <button type="button" onClick={this.handleSaveVideoFile}>Сохранить ссылку</button>

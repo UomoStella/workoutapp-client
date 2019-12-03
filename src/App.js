@@ -13,6 +13,8 @@ import { Layout, notification } from 'antd';
 import { ACCESS_TOKEN } from './constants';
 import Userdetails from './components/userdetails/Userdetails';
 import ExercisesMedia from './components/exercises/media/ExercisesMedia';
+import ExercisesList from './components/exercises/list/ExercisesList';
+
 
 
 
@@ -133,7 +135,10 @@ class App extends Component {
                     <Exercises handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   <Route path="/exercises/media/:exercisesid?" render={(props) => 
                     <ExercisesMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                  <Route path="/exercises/list" render={(props) => 
+                    <ExercisesList handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   
+
                   {/* <Route path="/exercises/create/:exercisesid?" render={(props) => <Exercises {...props}  />}> */}
                 {/* </Route> */}
 
