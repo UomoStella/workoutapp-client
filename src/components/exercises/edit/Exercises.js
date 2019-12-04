@@ -9,6 +9,7 @@ import { ACCESS_TOKEN } from '../../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
+const { TextArea } = Input;
 
 class Exercises extends Component {
     constructor(props) {
@@ -215,7 +216,7 @@ class ExercisesForm extends Component {
 
         const typeTrainingResponseViews = [];
         this.state.typeTrainingResponseList.forEach((type, typeIndex) => {
-            typeTrainingResponseViews.push(<Option  key={type.id}>{type.id} {type.name}</Option>);
+            typeTrainingResponseViews.push(<Option  key={type.id}>{type.name}</Option>);
           });
 
         const muscleGroupsResponseViews = [];
@@ -241,8 +242,8 @@ class ExercisesForm extends Component {
                     {getFieldDecorator('description', {
                         initialValue: this.state.description
                     })(
-                    <Input
-                        // prefix={<Icon type="user" />}
+                    <TextArea
+                        rows={4}
                         size="large"
                         placeholder="Описание"/>
                     )}
@@ -311,7 +312,7 @@ class ExercisesForm extends Component {
                 </Form.Item>
 
                 <FormItem>
-                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">Сохранить</Button>
+                    <Button icon="save" type="primary" htmlType="submit" size="large">Сохранить</Button>
                 </FormItem>
             </Form>
         );

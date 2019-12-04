@@ -19,6 +19,11 @@ class AppHeader extends Component {
         let menuItems;
         if(this.props.currentUser) {
           menuItems = [
+            <Menu.Item key="/exercises/all">
+              <Link to="/exercises/all">
+                <Icon type="heart" className="nav-icon" /> <span>Упражнения</span>
+              </Link>
+            </Menu.Item>,
             <Menu.Item key="/">
               <Link to="/">
                 <Icon type="home" className="nav-icon" />

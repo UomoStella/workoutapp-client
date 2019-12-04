@@ -12,7 +12,8 @@ class VideoPlayer extends Component {
     }
 
     render () {
-        return <ReactPlayer url={this.state.url} 
+        return <ReactPlayer style={{border: '1px solid #e0ccff'}}
+                             url={this.state.url} 
                             controls={true} 
                             light={true}
                             width={this.state.width}

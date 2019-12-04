@@ -23,12 +23,12 @@ export class TrainingService {
         return service.getRestClient().get("/training/exercises/media", { params: { id : id}});
     }
 
-    getExercisesListByPage(data){
-        return service.getRestClient().get("/training/exercises/list", data);
+    getExercisesListByPage(paginationpage){
+        return service.getRestClient().get("/training/exercises/list", { params: { paginationpage : paginationpage}});
     }
 
+    postExercisesDelete(data){
+        return service.getRestClient().post("/training/exercises/delete", data);
+    }
 
-
-    
-    
 }

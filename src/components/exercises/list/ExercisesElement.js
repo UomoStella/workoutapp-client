@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { TrainingService } from '../../../service/TrainingService';
-import { FileService } from '../../../service/FileService';
 import {withRouter, Link } from 'react-router-dom';
-import { notification,  Button, Row, Col, Tabs, Icon } from 'antd';
+import { Button, Row, Col, Modal, Icon } from 'antd';
 import LoadingIndicator from '../../LoadingIndicator';
 import ExcersicesLogo from '../../../resources/excersices.png';
+
+const {confirm} = Modal;
 
 class ExercisesElement extends Component {
     constructor(props) {
@@ -13,12 +13,36 @@ class ExercisesElement extends Component {
             id : this.props.id,
             name: this.props.name,
             subtypeTrainingName: this.props.subtypeTrainingName,
-            muscleGroupsValue: this.props.muscleGroupsValue,
+            muscleGroupsNameSet: this.props.muscleGroupsNameSet,
             imageBase64: this.props.imageBase64,
 
             isLoading: false
         }
+        
+        this.showDeleteConfirm = this.showDeleteConfirm.bind(this);
     }
+    
+    showDeleteConfirm() {
+        const id = this.state.id;
+    
+        const thisPrev = this;
+
+        confirm({
+            title: 'Вы уверены что хотите удалить упражнение?',
+            content: 'Данное упражнение невозможно будет восстановить.',
+            okText: 'Да',
+            okType: 'danger',
+            cancelText: 'Нет',
+            onOk() {
+                thisPrev.props.exercisesDelete(id);
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+
+      };
+
 
     render() {   
         if(this.state.isLoading) {
@@ -29,65 +53,57 @@ class ExercisesElement extends Component {
             textAlign: 'right'
         };
 
-        var myStyle = {
-            maxHeight: '200px',
-            width: '100%'
-        };
 
         const imageBase64 = "data:image/png;base64, "+ this.state.imageBase64;
         const linkButton = "/exercises/media/" + this.state.id;
+
+        const muscleGroupsNameList = [];
+        this.state.muscleGroupsNameSet.forEach((muscleGroup, index) => { 
+            muscleGroupsNameList.push(<li> {muscleGroup} </li>);
+        });
+
+
         return (
-                <Row style={{border: '1px solid #000'}}>
+            <div className="col-exercises_element">
+                <Row>
                     <Col span={24}>
                     <Row>
-                        <Col span={24}>
+                        <Col className="col-img-exercises_element" span={24}>
                             {!this.state.imageBase64.length == 0 ?
-                                <img src={imageBase64} style={myStyle} alt="Red dot" />
+                                <img src={imageBase64}  alt="Red dot" />
                                 :
-                                <img src={ExcersicesLogo} style={myStyle} alt="Red dot" />
+                                <img src={ExcersicesLogo} alt="Red dot" />
                             }
                         </Col>
                     
                     </Row>
 
-                    <Row>
+                    <Row className="col-value-exercises_element">
                         <Col span={24}>
-                            <p>{this.state.name}</p>
+                            <p className="p-name">{this.state.name}</p>
                             <p>{this.state.subtypeTrainingName}</p>
-                            <p>{this.state.muscleGroupsValue}</p>
+                            <ul>{muscleGroupsNameList}</ul>
                         </Col>
-                        <Col span={24}>
-                            {this.state.id != null ?
-                                <div style={textAlignEnd}>
-                                    <Button><Link to={linkButton}><Icon type="edit" /></Link></Button> 
-                                    <Button><Link to={linkButton}><Icon type="delete" /></Link></Button> 
-                                </div>
-                            : null
-                            }
-                        </Col>
-                        
                     </Row>
                     </Col>
                 </Row>
+                <Row className="col-btn-exercises_element">
+                    <Col span={24}>
+                        {this.state.id != null ?
+                            <div style={textAlignEnd}>
+                                <Link to={linkButton}>
+                                    <Button title="Редактировать" className="btn-edit" type="primary" icon="edit">Изменить</Button> 
+                                </Link>
+                                <Button title="Удалить" className="btn-delete"  onClick={this.showDeleteConfirm} icon="delete">Удалить</Button> 
+                            </div>
+                        : null
+                        }
+                    </Col>
+                </Row>
+            </div>
         );
     }
 }
-
-// function showDeleteConfirm() {
-//     confirm({
-//       title: 'Вы уверены что хотите удалить упражнение?',
-//       content: 'Данное упражнение невозможно будет восстановить.',
-//       okText: 'Да',
-//       okType: 'danger',
-//       cancelText: 'Нет',
-//       onOk() {
-//         console.log('OK');
-//       },
-//       onCancel() {
-//         console.log('Cancel');
-//       },
-//     });
-//   }
 
 
 export default withRouter(ExercisesElement);

@@ -13,10 +13,7 @@ import { Layout, notification } from 'antd';
 import { ACCESS_TOKEN } from './constants';
 import Userdetails from './components/userdetails/Userdetails';
 import ExercisesMedia from './components/exercises/media/ExercisesMedia';
-import ExercisesList from './components/exercises/list/ExercisesList';
-
-
-
+import ExercisesAll from './components/exercises/list/ExercisesAll';
 
 const Footer = Layout.Footer;
 const { Content } = Layout;
@@ -120,8 +117,8 @@ class App extends Component {
       this.state.isLoading ? (
           <LoadingIndicator />    
         ): 
-        <Content>
-              <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
+        <Content style={{ padding: '0 50px', marginTop: 20 }}>
+              <div style={{ background: '#fff', padding: 24, minHeight: 1000 }}>
                 <Switch>      
                   <Route exact path="/"/>
                   <Route path="/login" render={(props) => <Login handleMessage={this.handleMessage} onLogin={this.handleLogin} {...props} />}></Route>
@@ -135,8 +132,8 @@ class App extends Component {
                     <Exercises handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   <Route path="/exercises/media/:exercisesid?" render={(props) => 
                     <ExercisesMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
-                  <Route path="/exercises/list" render={(props) => 
-                    <ExercisesList handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                  <Route path="/exercises/all" render={(props) => 
+                    <ExercisesAll handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   
 
                   {/* <Route path="/exercises/create/:exercisesid?" render={(props) => <Exercises {...props}  />}> */}
@@ -148,7 +145,7 @@ class App extends Component {
           </Content>
         }
 
-          {/* <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer> */}
+          <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
         </Layout>
       );
   }

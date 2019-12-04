@@ -1,0 +1,46 @@
+.exercises-list .col-exercises_element {
+    border: 1px solid #e0ccff;
+    border-radius: 3px;
+    height: 400px;
+    display: inline-grid;
+    overflow: auto;
+    position: relative;
+    background: #fdf5e6;
+}
+
+
+.exercises-list .col-btn-exercises_element {
+    margin: 15px;
+    margin-top: auto;
+}
+
+.exercises-list .col-value-exercises_element {
+    margin: 3px 14px;
+}
+.exercises-list .col-exercises_element .col-img-exercises_element{
+    text-align: center;
+    border-bottom: 1px solid #e0ccff;
+}
+
+.exercises-list .col-exercises_element .col-img-exercises_element img{
+    /* max-width: 400px; */
+    width: 100%;
+    height: 200px;
+}
+
+.exercises-list .col-exercises_element .btn-edit{
+    float: left;
+}
+
+.exercises-list .col-exercises_element .btn-delete{
+    float: right;
+}
+
+
+.exercises-list .col-value-exercises_element .p-name{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.exercises-list .col-value-exercises_element p{
+    margin-bottom: 3px;
+}
