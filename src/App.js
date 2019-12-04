@@ -14,6 +14,8 @@ import { ACCESS_TOKEN } from './constants';
 import Userdetails from './components/userdetails/Userdetails';
 import ExercisesMedia from './components/exercises/media/ExercisesMedia';
 import ExercisesAll from './components/exercises/list/ExercisesAll';
+import TrainingProgramEdit from './components/trainingprogram/TrainingProgramEdit';
+
 
 const Footer = Layout.Footer;
 const { Content } = Layout;
@@ -128,12 +130,17 @@ class App extends Component {
                   {/* <Route path="/user/details"  render={(props) => }/> */}
                   <Route path="/user/details" render={(props) => <Userdetails handleLogout={this.handleLogout} {...props} />}></Route>
 
+              {/* exercises */}
                   <Route path="/exercises/edit/:exercisesid?" render={(props) => 
                     <Exercises handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   <Route path="/exercises/media/:exercisesid?" render={(props) => 
                     <ExercisesMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   <Route path="/exercises/all" render={(props) => 
                     <ExercisesAll handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+
+              {/* TrainingProgramEdit */}
+                <Route path="/trainingprogram/edit/:treningId?" render={(props) => 
+                    <TrainingProgramEdit handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   
 
                   {/* <Route path="/exercises/create/:exercisesid?" render={(props) => <Exercises {...props}  />}> */}
