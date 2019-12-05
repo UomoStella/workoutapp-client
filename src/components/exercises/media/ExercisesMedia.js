@@ -276,11 +276,6 @@ class ExercisesMedia extends Component {
 
         const imageBase64 = "data:image/png;base64, "+ this.state.imageBase64;
 
-
-        var textAlignEnd = {
-            textAlign: 'right'
-        };
-
         const thisPrev = this;
         const propsUploadImage = {
             beforeUpload: file => {

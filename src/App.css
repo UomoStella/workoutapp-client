@@ -5,3 +5,57 @@
   margin: 16px 24px 16px 0;
   float: left;
 }
+
+
+.text-main-exercises_media{
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.text-main-exercises_media span,
+.text-exercises_media span{
+  font-weight: 400;
+  font-style: italic;
+}
+
+.text-exercises_media{
+  font-weight: bold;
+}
+
+.list-muscle_groups-exercises_media span{
+  font-weight: bold;
+  border-bottom: 1px solid #e0ccff;
+  padding-right: 250px;
+}
+
+.col-imageupload-exercises_media img{
+  max-height: 700px;
+  max-width: 700px;
+  width: 100%;
+}
+
+.col-videofile-exercises_media .btn-delete,
+.col-imageupload-exercises_media .btn-delete{
+  margin-top: 10px;
+}
+
+.col-videofile-exercises_media .noFile{
+  font-weight: bold;
+  font-size: 1.5em;
+  color: blueviolet;
+}
+
+.col-btn-right{
+  text-align: right;
+}
+
+.link-input-field{
+  display: flex;
+  margin-bottom: 15px;
+}
+.link-input-field input{
+  widows: 80%;
+}
+.link-input-field button{
+  widows: 20%;
+}

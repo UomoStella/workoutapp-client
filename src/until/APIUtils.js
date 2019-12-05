@@ -53,6 +53,15 @@ export function checkUsernameAvailability(username) {
     });
 }
 
+export function getAllUserByUsername(username) {
+    return request({
+        url: API_BASE_URL + "/user/by/username?username=" + username,
+        method: 'GET'
+    });
+}
+
+
+
 export function checkEmailAvailability(email) {
     return request({
         url: API_BASE_URL + "/user/checkEmailAvailability?email=" + email,

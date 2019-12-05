@@ -9,13 +9,12 @@ export class FileService {
     uploadExercisesImage(data){
         return service.getRestClient().post('/training/exercises/media/image', data);
     }
+    deleteExercisesImage(data){    
+        return service.getRestClient().post('/training/exercises/media/delete/image', data);
+    }
 
     uploadExercisesFileVideo(data){
         return service.getRestClient().post('/training/exercises/media/filevideo', data);
-    }
-
-    deleteExercisesImage(data){    
-        return service.getRestClient().post('/training/exercises/media/delete/image', data);
     }
 
     deleteExercisesFileVideo(data){    
@@ -30,5 +29,14 @@ export class FileService {
     uploadUserDetailsToServer(data){
     
         return service.getRestClient().post('/user/details', JSON.stringify(data));
+    }
+
+
+
+    uploadTrainingProgramImage(data){
+        return service.getRestClient().post('/trainingprogram/edit/image', data);
+    }
+    deleteTrainingProgramImage(data){    
+        return service.getRestClient().post('/trainingprogram/delete/image', data);
     }
 }

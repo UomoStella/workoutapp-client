@@ -15,6 +15,7 @@ import Userdetails from './components/userdetails/Userdetails';
 import ExercisesMedia from './components/exercises/media/ExercisesMedia';
 import ExercisesAll from './components/exercises/list/ExercisesAll';
 import TrainingProgramEdit from './components/trainingprogram/TrainingProgramEdit';
+import TrainingProgramDetails from './components/trainingprogram/TrainingProgramDetails';
 
 
 const Footer = Layout.Footer;
@@ -142,6 +143,11 @@ class App extends Component {
                 <Route path="/trainingprogram/edit/:treningId?" render={(props) => 
                     <TrainingProgramEdit handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
                   
+                  <Route path="/trainingprogram/details/:trainingprogramId?" render={(props) => 
+                    <TrainingProgramDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+
+                
+
 
                   {/* <Route path="/exercises/create/:exercisesid?" render={(props) => <Exercises {...props}  />}> */}
                 {/* </Route> */}

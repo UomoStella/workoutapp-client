@@ -78,7 +78,7 @@ class TrainingProgramEditForm extends Component {
                 this.trainingProgramService.postTrainingProgramEditById(JSON.stringify(trainingProgramRequest))
                 .then(response => {
                     const trainingProgramId = response.data;
-                    this.props.handleMessage('/trainingprogram/edit/'+ trainingProgramId, 'success', 'Данные успешно сохранены');
+                    this.props.handleMessage('/trainingprogram/details/'+ trainingProgramId, 'success', 'Данные успешно сохранены');
                 }).catch(error => {
                     notification.error({
                         message: 'Ошибка',
