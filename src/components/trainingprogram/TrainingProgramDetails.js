@@ -31,9 +31,11 @@ class TrainingProgramDetails extends Component {
             userDetails: [],
             isModelShow: false,
             UserSelectId: undefined,
+            usersPrivate: [],
 
             serverError: false,
             notFound: false,
+            isPrivateLoading: false,
             isLoading: false
         };
 
@@ -41,12 +43,56 @@ class TrainingProgramDetails extends Component {
         this.getTrainingProgramDetails = this.getTrainingProgramDetails.bind(this);
         this.handleUploadImageFile = this.handleUploadImageFile.bind(this);
         this.handleUploadImageFile = this.handleUploadImageFile.bind(this);
+        this.saveUserPrivate = this.saveUserPrivate.bind(this);
+        this.deleteUserPrivate = this.deleteUserPrivate.bind(this);
+        this.handleGetPrivateList = this.handleGetPrivateList.bind(this);
         
-        
+
         this.trainingProgramService = new TrainingProgramService();
         this.fileService = new FileService()
     }
 
+    saveUserPrivate = (username) => {
+        const data = new FormData();
+            data.append('username', username);
+            data.append('id', this.state.id);
+        const thisPrev = this;
+        this.trainingProgramService.postEditDetailsPrivate(data)
+        .then((response) => {
+            notification.success({
+                message: 'Сообщение',
+                description: "Пользователь добавлен.",
+              });
+              this.handleGetPrivateList();
+        }).catch((error) => {
+            notification.error({
+                message: 'Ошибка',
+                description: 'Не удалось добавить пользоватея!'
+            });
+        });        
+      }
+
+      deleteUserPrivate = (username) => {
+        const data = new FormData();
+            data.append('username', username);
+            data.append('id', this.state.id);
+        const thisPrev = this;
+        this.trainingProgramService.postEditdetailsPrivateDelete(data)
+        .then((response) => {
+            notification.success({
+                message: 'Сообщение',
+                description: "Пользователь удален.",
+              });
+              this.handleGetPrivateList();
+        }).catch((error) => {
+            notification.error({
+                message: 'Ошибка',
+                description: 'Не удалось удалить пользоватея!'
+            });
+        });        
+      }
+
+      
 
 
     getTrainingProgramDetails(trainingProgramId){
@@ -121,6 +167,36 @@ class TrainingProgramDetails extends Component {
         });
     };
 
+
+
+    handleGetPrivateList = () =>{
+        this.setState({
+            isPrivateLoading: true
+        })
+        this.trainingProgramService.getTrainingprogramEditDetailsPrivate(this.state.id)
+            .then((response) => {
+                const privateList = response.data.containerList;
+            if(privateList == null || privateList.length == 0)
+                this.setState({
+                    isPrivateLoading: false,
+                    usersPrivate: []
+                })
+            else
+                this.setState({
+                    isPrivateLoading: false,
+                    usersPrivate: privateList
+                })
+        }).catch((error) => {
+            this.setState({
+                isPrivateLoading: false
+            })
+            notification.error({
+                message: 'Ошибка',
+                description: 'Не удалось загрузить информацию о приватности!'
+            });
+        });
+    };
+
     handleDeleteImageFile = (event) => {    
         const data = new FormData();
             data.append('id', this.state.id);
@@ -142,24 +218,6 @@ class TrainingProgramDetails extends Component {
         });
     };
 
-    handleAddPrivateUser = (value) => {    
-        
-        this.fileService.deleteTrainingProgramImage(data).then((response) => {
-            this.setState({
-                base64Image:  ''
-            });
-        
-            notification.success({
-                message: 'Сообщение',
-                description: "Изображение успешно удалено.",
-              });
-        }).catch((error) => {
-            notification.error({
-                message: 'Ошибка',
-                description: 'Не удалось удалить файл!'
-            });
-        });
-    };
 
 
     componentDidMount() {
@@ -270,7 +328,7 @@ class TrainingProgramDetails extends Component {
                                             itemLayout="horizontal"
                                             dataSource={this.state.userDetails}
                                             renderItem={item => (
-                                            <List.Item actions={[<Link to={'/user/profile'}>Профиль</Link>]}>
+                                            <List.Item actions={[<Link to={'/user/profile'}>Профиль</Link>, <a key="list-loadmore-more">Очистить</a>]}>
                                                 <List.Item.Meta
                                                 title={<span>{item.lastName} {item.firstName}  ({item.name})</span>}
                                                 description={<span>{item.gender}</span>}
@@ -289,27 +347,34 @@ class TrainingProgramDetails extends Component {
                                     <Tabs defaultActiveKey="1">
                                         <TabPane tab={<span>Список пользователей</span>} key="1">
                                             <Row>
-                                            {this.state.usersPrivate.length != 0 ?
-                                                <List
-                                                    itemLayout="horizontal"
-                                                    dataSource={this.state.usersPrivate}
-                                                    renderItem={item => (
-                                                    <List.Item actions={[<span>Удалить</span>]}>
-                                                        <List.Item.Meta
-                                                        title={<span>{item.lastName} {item.firstName}  ({item.name})</span>}
-                                                        description={<span>{item.gender}</span>}
-                                                        />
-                                                    </List.Item>
-                                                    )}
-                                                />
-                                                : 
-                                                <p>Не данных по дням.</p>
-                                            }
+                                                {this.state.isPrivateLoading ?
+                                                    <LoadingIndicator/>
+                                                    :
+                                                    <div>
+                                                        {this.state.usersPrivate.length != 0 ?
+                                                            <List
+                                                                itemLayout="horizontal"
+                                                                dataSource={this.state.usersPrivate}
+                                                                renderItem={item => (
+                                                                <List.Item actions={[<a onClick={this.deleteUserPrivate.bind(this, item.username)} key="list-loadmore-more">Удалить</a>,]}>
+                                                                    <List.Item.Meta
+                                                                    title={<span>{item.lastName} {item.firstName}  ({item.name})</span>}
+                                                                    description={<span>{item.gender}</span>}
+                                                                    />
+                                                                </List.Item>
+                                                                )}
+                                                            />
+                                                            : 
+                                                            <p>Не данных по дням.</p>
+                                                        }
+                                                    </div>
+                                                }
+                                            
                                             </Row>     
                                         </TabPane>
                                         <TabPane tab={<span>Добавить пользователя</span>} key="2">
                                             <Row>
-                                                <UserSelectModal UserSelectId={this.state.UserSelectId} placeholder="Введите имя польователя" style={{ width: '100%' }} />
+                                                <UserSelectModal saveUser={this.saveUserPrivate} placeholder="Введите имя польователя" style={{ width: '100%' }} />
                                             </Row>     
                                         </TabPane>
                                     </Tabs>                   

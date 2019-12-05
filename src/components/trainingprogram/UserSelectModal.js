@@ -77,34 +77,15 @@ class UserSelectModal extends Component {
 
 
       saveUser(){
-        const data = new FormData();
-        data.append('username', this.state.value);
-        data.append('id', this.state.trainingProgramId);
-
-        this.trainingProgramService.postEditDetailsPrivate(data).then((response) => {
-            if(response.data == null || response.data.length == 0)
-                return;
-            this.setState({
-                base64Image:  response.data,
-            });
-            notification.success({
-                message: 'Сообщение',
-                description: "Файл успешно загружен.",
-              });
-        }).catch((error) => {
-            notification.error({
-                message: 'Ошибка',
-                description: 'Не удалось загрузить файл!'
-            });
-        });
+        this.props.saveUser(this.state.value);
       }
 
     render() {   
         const options = this.state.data.map(d => <Option key={d.value}>{d.text}</Option>);
         return (
                 <Row>
-                    <Col span={24}>
-                        <Select  showSearch style={{width: '80%'}}
+                    <Col span={20}>
+                        <Select  showSearch style={{width: '100%'}}
                             value={this.state.value}
                             placeholder={this.props.placeholder}
                             style={this.props.style}
@@ -116,7 +97,9 @@ class UserSelectModal extends Component {
                             notFoundContent={null}>
                             {options}
                         </Select>
-                        <Button style={{width: '20%'}} type="primary" onClick={this.saveUser}>Сохранить</Button>
+                    </Col>
+                    <Col span={4}>
+                        <Button style={{width: '100%'}} type="primary" onClick={this.saveUser}>Сохранить</Button>
                     </Col>
                 </Row>
 

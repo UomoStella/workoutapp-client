@@ -14,12 +14,17 @@ export class TrainingProgramService {
         return service.getRestClient().get("/trainingprogram/edit/details", { params: { id : id}});
     }
 
+    getTrainingprogramEditDetailsPrivate(id){
+        return service.getRestClient().get("/trainingprogram/edit/details/privatelist", { params: { id : id}});
+    }
+
+
     postEditDetailsPrivate(data){
-        return service.getRestClient().post("/edit/details/private", data);
+        return service.getRestClient().post("/trainingprogram/edit/details/private", data);
     }
     
-    getEditdetailsPrivateDelete(data){
-        return service.getRestClient().post("/edit/details/private/delete", data);
+    postEditdetailsPrivateDelete(data){
+        return service.getRestClient().post("/trainingprogram/edit/details/private/delete", data);
     }
 
 }
