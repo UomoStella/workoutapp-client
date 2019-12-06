@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Row, Col} from 'antd';
 // import './ExercisesList.css';
-import LoadingIndicator from '../../LoadingIndicator';
+import LoadingIndicator from '../LoadingIndicator';
+import './List.css';
 // import ExcersicesLogo from '../../../resources/excersices.png';
-// import ExercisesElement from './ExercisesElement'
+import ListElement from './ListElement'
 
 class List extends Component {
     constructor(props) {
@@ -48,26 +49,12 @@ class List extends Component {
             return <LoadingIndicator/>
         }
 
-        const valueList = [];
-    
-        this.state.content.forEach((value) => { 
-            valueList.push(
-                <Col md={6} gutter={[16, 16]} >
-                    <ListElement id={value.id}
-                        imageBase64={value.imageBase64}
-                        handleEdit={this.props.handleEdit}
-                        handleDelete={this.props.handleDelete}
-                        additionInfo={this.props.additionInfo}
-                        />
-                </Col>
-            );
-        });
         
         return (
                 <div>
                     {!this.state.noDataInContent ?
                         <Row gutter={16}>
-                            {valueList}
+                            {this.state.content}
                         </Row>
                     :
                         <p>Нет данных!!</p>

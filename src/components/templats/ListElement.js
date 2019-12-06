@@ -26,8 +26,8 @@ class ListElement extends Component {
         const thisPrev = this;
 
         confirm({
-            title: 'Вы уверены что хотите удалить упражнение?',
-            content: 'Данное упражнение невозможно будет восстановить.',
+            title: 'Вы уверены что хотите удалить?',
+            content: 'Данные невозможно будет восстановить.',
             okText: 'Да',
             okType: 'danger',
             cancelText: 'Нет',
@@ -56,11 +56,11 @@ class ListElement extends Component {
 
         const imageBase64 = "data:image/png;base64, "+ this.state.imageBase64;
         return (
-            <div className="col-exercises_element">
+            <div className="col-list_element">
                 <Row>
                     <Col span={24}>
                     <Row>
-                        <Col className="col-img-exercises_element" span={24}>
+                        <Col className="col-img-list_element" span={24}>
                             {!this.state.imageBase64.length == 0 ?
                                 <img src={imageBase64}  alt="Red dot" />
                                 :
@@ -70,7 +70,7 @@ class ListElement extends Component {
                     
                     </Row>
                     {this.props.additionInfo.length != 0 ?
-                        <Row className="col-value-exercises_element">
+                        <Row className="col-value-list_element">
                             <Col span={24}>
                                 {this.props.additionInfo}
                             </Col>
@@ -80,7 +80,7 @@ class ListElement extends Component {
                     }
                     </Col>
                 </Row>
-                <Row className="col-btn-exercises_element">
+                <Row className="col-btn-list_element">
                     <Col span={24}>
                         {this.state.id != null ?
                             <div style={textAlignEnd}>

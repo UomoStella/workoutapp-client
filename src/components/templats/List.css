@@ -1,0 +1,50 @@
+.col-list_element {
+    border: 1px solid #e0ccff;
+    border-radius: 3px;
+    height: 400px;
+    display: inline-grid;
+    overflow: auto;
+    position: relative;
+    background: #fdf5e6;
+}
+
+
+.col-btn-list_element {
+    margin: 15px;
+    margin-top: auto;
+}
+
+.col-value-list_element {
+    margin: 3px 14px;
+}
+.col-list_element .col-img-list_element{
+    text-align: center;
+    border-bottom: 1px solid #e0ccff;
+}
+
+.col-list_element .col-img-list_element img{
+    /* max-width: 400px; */
+    width: 100%;
+    height: 200px;
+}
+
+.col-list_element .btn-edit{
+    float: left;
+}
+
+.col-list_element .btn-delete{
+    float: right;
+}
+
+
+.col-value-list_element .p-name{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.col-value-list_element .p-addition{
+    font-style: italic;
+}
+
+.col-value-list_element p{
+    margin-bottom: 3px;
+}

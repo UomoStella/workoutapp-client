@@ -24,6 +24,13 @@ class AppHeader extends Component {
                 <Icon type="heart" className="nav-icon" /> <span>Упражнения</span>
               </Link>
             </Menu.Item>,
+            <Menu.Item key="/trainingprogram/all">
+              <Link to="/trainingprogram/all">
+                <Icon type="rise" /><span>Программа тренировок</span>
+              </Link>
+            </Menu.Item>,
+
+
             <Menu.Item key="/">
               <Link to="/">
                 <Icon type="home" className="nav-icon" />

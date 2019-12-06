@@ -18,6 +18,8 @@ import TrainingProgramEdit from './components/core/trainingprogram/TrainingProgr
 import TrainingProgramDetails from './components/core/trainingprogram/TrainingProgramDetails';
 import DailyWorkoutEdit from './components/core/dailyworkout/DailyWorkoutEdit';
 import DailyWorkoutDetails from './components/core/dailyworkout/DailyWorkoutDetails';
+import TrainingProgramAll from './components/core/TrainingProgramAll';
+
 
 
 const Footer = Layout.Footer;
@@ -98,13 +100,13 @@ class App extends Component {
 
 
   handleMessage(redirectTo="/", notificationType="success", description="Ошибка.") {
-    
     this.props.history.push(redirectTo);
-    
-    notification[notificationType]({
-      message: 'Сообщение',
-      description: description,
-    });
+    if(notificationType != ""){  
+      notification[notificationType]({
+        message: 'Сообщение',
+        description: description,
+      });
+    }
   }
   
 
@@ -155,6 +157,9 @@ class App extends Component {
                 <Route path="/workout/details/edit/:trainingProgramId/:day" render={(props) => 
                     <DailyWorkoutDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
 
+                <Route path="/trainingprogram/all" render={(props) => 
+                    <TrainingProgramAll handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+            
                 
 
 

@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
-import { notification, Button, Row, Col, Tabs, Icon, Typography, Input, List, Skeleton } from 'antd';
+import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Input, List, Skeleton } from 'antd';
 
 import { DailyWorkoutService } from '../../../service/DailyWorkoutService';
+import { TrainingDescriptionService } from '../../../service/TrainingDescriptionService';
+
 
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
+import TrainingDescriptionEdit from '../../../components/core/trainingdescription/TrainingDescriptionEdit';
 
 import { ACCESS_TOKEN } from '../../../constants';
 
@@ -28,16 +31,64 @@ class DailyWorkoutDetails extends Component {
             rationDayId: '',
             rationDayName: '',
             trainingDescriptions: [],
+            visible: false,
+            selectedTDId: '',
 
             serverError: false,
             notFound: false,
             isPrivateLoading: false,
+            isLoadingTable: false,
             isLoading: false
         };
     
         this.getDailyWorkoutDetails = this.getDailyWorkoutDetails.bind(this);
+        this.showDrawerVal = this.showDrawerVal.bind(this);
+        this.getExercisesAllBydailyid = this.getExercisesAllBydailyid.bind(this);
+        this.deleteTrainingDescription = this.deleteTrainingDescription.bind(this);
+
+        
         this.dailyWorkoutService = new DailyWorkoutService();
+        this.trainingDescriptionService = new TrainingDescriptionService();
     }
+
+
+    showDrawer = () => {
+        this.setState({
+          visible: true,
+        });
+      };
+
+    showDrawerVal = (value) => {
+        this.setState({
+            selectedTDId: value,
+            visible: true,
+        });
+       };
+    
+      onClose = () => {
+        this.setState({
+          visible: false,
+        });
+      };
+
+      deleteTrainingDescription(id){
+        const data = new FormData();
+            data.append('id', id);
+        this.trainingDescriptionService.postTrainingDescriptionDelete(data).then(response => {
+            notification.success({
+                message: 'Собщение',
+                description: 'Упражнение успешно удалено!'
+            });
+            this.getExercisesAllBydailyid();
+            
+        }).catch(error => {
+            notification.error({
+                message: 'Ошибка',
+                description: error.message || 'Извините! Что-то пошло не так. Попытайтесь снова!'
+            });
+        });    
+    }
+
 
     getDailyWorkoutDetails(trainingProgramId, day){
         this.setState({
@@ -85,6 +136,33 @@ class DailyWorkoutDetails extends Component {
         });    
     }
 
+    getExercisesAllBydailyid(){
+        this.setState({
+            isLoadingTable: true,
+        });
+
+        this.trainingDescriptionService.getExercisesAllBydailyid(this.state.id).then(response => {
+            const trainingDescriptions  = response.data;
+
+            this.setState({
+                trainingDescriptions: trainingDescriptions.containerList,
+                isLoadingTable: false,
+                visible: false
+            });   
+
+            
+        }).catch(error => {
+            notification.error({
+                message: 'Ошибка',
+                description: error.message || 'Извините! Что-то пошло не так. Попытайтесь снова!'
+            });
+            this.setState({
+                isLoadingTable: false
+            });
+        });    
+    }
+    
+
     componentDidMount() {
         if(!localStorage.getItem(ACCESS_TOKEN)) {
             this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
@@ -114,7 +192,7 @@ class DailyWorkoutDetails extends Component {
             <div>
                     <Row  gutter={[16, 16]}>
                         <Col md={18}>
-                            <Title level={2}>Программа тренировок: {this.state.trainingProgramName} (дунь {this.state.day})</Title>
+                            <Title level={2}>Программа тренировок: {this.state.trainingProgramName} (день {this.state.day})</Title>
                             <p>Наименование: <span>{this.state.name}</span></p>
                             <p>Описание: <span>{this.state.description}</span></p>
                         </Col>
@@ -131,14 +209,48 @@ class DailyWorkoutDetails extends Component {
                             <Tabs defaultActiveKey="1">
                                 <TabPane tab={<span><Icon type="schedule"/>Список упражнеений</span>} key="1">
                                     <div style={{textAlign: 'right'}}>
-                                        <Button type="primary"><Icon type="plus" /> Добавить</Button>
+                                        <Button type="primary" onClick={this.showDrawer}><Icon type="plus" /> Добавить</Button>
                                     </div>
+                                    {this.state.isLoadingTable ?
+                                        <LoadingIndicator/>
+                                    :
+                                        <div>
+                                        {this.state.trainingDescriptions.length != 0 ?
+                                            <List
+                                                itemLayout="horizontal"
+                                                dataSource={this.state.trainingDescriptions}
+                                                renderItem={item => (
+                                                <List.Item actions={[<a key="list-loadmore-more">Вверх</a>,
+                                                <a key="list-loadmore-more">Вниз</a>, 
+                                                <a onClick={this.showDrawerVal.bind(this, item.id)} key="list-loadmore-more">Изменить</a>,
+                                                <a onClick={this.deleteTrainingDescription.bind(this, item.id)} key="list-loadmore-more">Удалить</a>]}>
+                                                    <List.Item.Meta
+                                                    title={<span>Упражнение: {item.exercises.name}</span>}
+                                                    description={<span>Время выполнения: {item.leadTime}</span>}
+                                                    />
+                                                </List.Item>
+                                                )}
+                                            />
+                                            : 
+                                            <p>Не данных по дням.</p>
+                                        }
+                                        </div>
+                                    }
                                     
                                 </TabPane>
                             </Tabs>
                         </Col>
                     </Row>
                     
+                    <Drawer title="Редактирование упражнения"
+                        width={720}
+                        onClose={this.onClose}
+                        visible={this.state.visible}
+                        bodyStyle={{ paddingBottom: 80 }}>
+                        {this.state.visible ?
+                            <TrainingDescriptionEdit getExercisesAllBydailyid={this.getExercisesAllBydailyid} TDId={this.state.selectedTDId} dailyid={this.state.id}/>
+                            :  null}
+                    </Drawer>
             </div>
         
         );

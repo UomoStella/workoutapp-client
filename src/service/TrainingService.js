@@ -30,5 +30,6 @@ export class TrainingService {
     postExercisesDelete(data){
         return service.getRestClient().post("/training/exercises/delete", data);
     }
+    
 
 }

@@ -3,7 +3,16 @@ import service from './Service';
 const api_url = "/trainingprogram";
 export class TrainingProgramService {
 
+    getTrainingProgramAll(pageNum){
+        return service.getRestClient().get(api_url+"/all", { params: { paginationpage : pageNum}});
+    }
+
+    postTrainingProgramDelete(data){
+        return service.getRestClient().post(api_url+"/delete", data);
+    }
     
+
+
     getTrainingProgramEditById(id){
         return service.getRestClient().get(api_url+"/edit", { params: { id : id}});
     }
@@ -28,5 +37,12 @@ export class TrainingProgramService {
     postEditdetailsPrivateDelete(data){
         return service.getRestClient().post(api_url+"/edit/details/private/delete", data);
     }
+
+
+        
+    getExercisesAllList(){
+        return service.getRestClient().get("/training/exercises/all/list");
+    }
+
 
 }
