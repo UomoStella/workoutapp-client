@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { TrainingProgramService } from '../../service/TrainingProgramService';
 import { Button, Select, Form, Input,  InputNumber , message, notification , Switch } from 'antd';
-import ServerError  from '../../error/ServerError';
-import LoadingIndicator from '../LoadingIndicator';
-import NotFound from '../../error/NotFound';
-import { ACCESS_TOKEN } from '../../constants';
+
+import { TrainingProgramService } from '../../../service/TrainingProgramService';
+import { ACCESS_TOKEN } from '../../../constants';
+//ERRORS
+import ServerError  from '../../../error/ServerError';
+import LoadingIndicator from '../../LoadingIndicator';
+import NotFound from '../../../error/NotFound';
 
 const { Option } = Select;
 const FormItem = Form.Item;

@@ -31,8 +31,6 @@ class ExercisesAll extends Component {
         this.trainingService = new TrainingService();
     }
 
-
-
     getExercisesMedia(pageNum){
         this.setState({
             isLoading: true,

@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import { TrainingProgramService } from '../../service/TrainingProgramService';
-import { FileService } from '../../service/FileService';
-import { notification, Button, Row, Col, Tabs, Icon, Upload, Input, List, Skeleton } from 'antd';
-import ServerError  from '../../error/ServerError';
-import LoadingIndicator from '../LoadingIndicator';
-import NotFound from '../../error/NotFound';
-import { ACCESS_TOKEN } from '../../constants';
 import {withRouter, Link } from 'react-router-dom';
-import ExcersicesLogo from '../../resources/excersices.png';
+import { notification, Button, Row, Col, Tabs, Icon, Upload, Input, List, Skeleton } from 'antd';
+
+import { TrainingProgramService } from '../../../service/TrainingProgramService';
+import { FileService } from '../../../service/FileService';
+
 import UserSelectModal from './UserSelectModal';
+import ExcersicesLogo from '../../../resources/excersices.png';
+
+import ServerError  from '../../../error/ServerError';
+import LoadingIndicator from '../../LoadingIndicator';
+import NotFound from '../../../error/NotFound';
+
+import { ACCESS_TOKEN } from '../../../constants';
 
 
 
@@ -307,9 +311,12 @@ class TrainingProgramDetails extends Component {
                                             itemLayout="horizontal"
                                             dataSource={this.state.dailyWorkoutResponseList}
                                             renderItem={item => (
-                                            <List.Item actions={[<Link to={item.id != null ?'/trainingprogram/edit/'+ item.id: '/trainingprogram/edit/'}>Изменить</Link>, <span>Очистить</span>]}>
+                                            <List.Item actions={[<Link to={item.id != null ?
+                                            '/workout/details/edit/'+ item.trainingProgramId+'/'+ item.day
+                                            : 
+                                            '/workout/edit/'+ item.trainingProgramId+'/'+ item.day}>Изменить</Link>, <span>Очистить</span>]}>
                                                 <List.Item.Meta
-                                                title={<span>{item.day} день ({item.name})</span>}
+                                                title={<span>{item.day} день ({item.id == null ? 'Нет данных' : item.name})</span>}
                                                 description={<span>{item.description}</span>}
                                                 />
                                             </List.Item>

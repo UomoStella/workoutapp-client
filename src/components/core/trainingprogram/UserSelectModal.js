@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Select , notification,Modal, Row, Col } from 'antd';
-import { getAllUserByUsername } from '../../until/APIUtils';
-import { TrainingProgramService } from '../../service/TrainingProgramService';
+import { getAllUserByUsername } from '../../../until/APIUtils';
+import { TrainingProgramService } from '../../../service/TrainingProgramService';
 
 
 const { Option } = Select;

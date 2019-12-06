@@ -14,8 +14,10 @@ import { ACCESS_TOKEN } from './constants';
 import Userdetails from './components/userdetails/Userdetails';
 import ExercisesMedia from './components/exercises/media/ExercisesMedia';
 import ExercisesAll from './components/exercises/list/ExercisesAll';
-import TrainingProgramEdit from './components/trainingprogram/TrainingProgramEdit';
-import TrainingProgramDetails from './components/trainingprogram/TrainingProgramDetails';
+import TrainingProgramEdit from './components/core/trainingprogram/TrainingProgramEdit';
+import TrainingProgramDetails from './components/core/trainingprogram/TrainingProgramDetails';
+import DailyWorkoutEdit from './components/core/dailyworkout/DailyWorkoutEdit';
+import DailyWorkoutDetails from './components/core/dailyworkout/DailyWorkoutDetails';
 
 
 const Footer = Layout.Footer;
@@ -133,18 +135,25 @@ class App extends Component {
 
               {/* exercises */}
                   <Route path="/exercises/edit/:exercisesid?" render={(props) => 
-                    <Exercises handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                    <Exercises handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
                   <Route path="/exercises/media/:exercisesid?" render={(props) => 
-                    <ExercisesMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                    <ExercisesMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
                   <Route path="/exercises/all" render={(props) => 
-                    <ExercisesAll handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                    <ExercisesAll handleMessage={this.handleMessage} handleLogout={this.handleLogout} />}></Route>
 
               {/* TrainingProgramEdit */}
                 <Route path="/trainingprogram/edit/:treningId?" render={(props) => 
-                    <TrainingProgramEdit handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                    <TrainingProgramEdit handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
                   
                   <Route path="/trainingprogram/details/:trainingprogramId?" render={(props) => 
-                    <TrainingProgramDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
+                    <TrainingProgramDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+
+                <Route path="/workout/edit/:trainingProgramId/:day/:id?" render={(props) => 
+                    <DailyWorkoutEdit handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+
+
+                <Route path="/workout/details/edit/:trainingProgramId/:day" render={(props) => 
+                    <DailyWorkoutDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
 
                 
 
