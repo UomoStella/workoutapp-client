@@ -15,7 +15,6 @@ import NotFound from '../../../error/NotFound';
 import { ACCESS_TOKEN } from '../../../constants';
 
 
-
 const { TabPane } = Tabs;
 
 
@@ -348,6 +347,7 @@ class TrainingProgramDetails extends Component {
                                     }
                                 </Row>                               
                             </TabPane>
+                            
 
                             {this.state.IsPrivate ?
                                 <TabPane tab={<span><Icon type="eye"/> Приватность </span>} key="4">

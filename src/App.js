@@ -20,6 +20,7 @@ import DailyWorkoutEdit from './components/core/dailyworkout/DailyWorkoutEdit';
 import DailyWorkoutDetails from './components/core/dailyworkout/DailyWorkoutDetails';
 import TrainingProgramAll from './components/core/TrainingProgramAll';
 
+import TrainingDescriptionView from './components/core/trainingprogram/TrainingDescriptionView';
 
 
 const Footer = Layout.Footer;
@@ -124,7 +125,7 @@ class App extends Component {
       this.state.isLoading ? (
           <LoadingIndicator />    
         ): 
-        <Content style={{ padding: '0 50px', marginTop: 20 }}>
+        <Content style={{ padding: '0 90px', marginTop: 20 }}>
               <div style={{ background: '#fff', padding: 24, minHeight: 1000 }}>
                 <Switch>      
                   <Route exact path="/"/>
@@ -159,6 +160,9 @@ class App extends Component {
 
                 <Route path="/trainingprogram/all" render={(props) => 
                     <TrainingProgramAll handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                <Route path="/trainingprogram/view/:dailyid" render={(props) => 
+                    <TrainingDescriptionView handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+
             
                 
 

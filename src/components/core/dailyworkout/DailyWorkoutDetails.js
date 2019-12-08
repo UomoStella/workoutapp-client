@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
-import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Input, List, Skeleton } from 'antd';
+import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Input, List, Modal } from 'antd';
 
 import { DailyWorkoutService } from '../../../service/DailyWorkoutService';
 import { TrainingDescriptionService } from '../../../service/TrainingDescriptionService';
@@ -14,7 +14,7 @@ import TrainingDescriptionEdit from '../../../components/core/trainingdescriptio
 import { ACCESS_TOKEN } from '../../../constants';
 
 
-
+const {confirm} = Modal;
 const { TabPane } = Tabs;
 const { Title } = Typography;
 
@@ -54,6 +54,7 @@ class DailyWorkoutDetails extends Component {
 
     showDrawer = () => {
         this.setState({
+            selectedTDId: '',
           visible: true,
         });
       };
@@ -72,20 +73,35 @@ class DailyWorkoutDetails extends Component {
       };
 
       deleteTrainingDescription(id){
-        const data = new FormData();
-            data.append('id', id);
-        this.trainingDescriptionService.postTrainingDescriptionDelete(data).then(response => {
-            notification.success({
-                message: 'Собщение',
-                description: 'Упражнение успешно удалено!'
-            });
-            this.getExercisesAllBydailyid();
-            
-        }).catch(error => {
-            notification.error({
-                message: 'Ошибка',
-                description: error.message || 'Извините! Что-то пошло не так. Попытайтесь снова!'
-            });
+
+        const thisPrev = this;
+
+        confirm({
+            title: 'Вы уверены что хотите удалить?',
+            content: 'Данные невозможно будет восстановить.',
+            okText: 'Да',
+            okType: 'danger',
+            cancelText: 'Нет',
+            onOk() {
+                const data = new FormData();
+                        data.append('id', id);
+                thisPrev.trainingDescriptionService.postTrainingDescriptionDelete(data).then(response => {
+                    notification.success({
+                        message: 'Собщение',
+                        description: 'Упражнение успешно удалено!'
+                    });
+                    thisPrev.getExercisesAllBydailyid();
+                    
+                }).catch(error => {
+                    notification.error({
+                        message: 'Ошибка',
+                        description: error.message || 'Извините! Что-то пошло не так. Попытайтесь снова!'
+                    });
+                });
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
         });    
     }
 
@@ -192,7 +208,7 @@ class DailyWorkoutDetails extends Component {
             <div>
                     <Row  gutter={[16, 16]}>
                         <Col md={18}>
-                            <Title level={2}>Программа тренировок: {this.state.trainingProgramName} (день {this.state.day})</Title>
+                            <Title level={3}>{this.state.trainingProgramName} (день {this.state.day})</Title>
                             <p>Наименование: <span>{this.state.name}</span></p>
                             <p>Описание: <span>{this.state.description}</span></p>
                         </Col>
@@ -201,6 +217,12 @@ class DailyWorkoutDetails extends Component {
                                 <Link to={'/workout/edit/'+ this.state.trainingProgramId+'/'+this.state.day+'/'+this.state.id}>
                                     <Button type="primary"><Icon type="edit" /> Редактировать</Button>
                                 </Link>
+                                <br/>
+                                <div className="margintop10">
+                                    <Link to={'/trainingprogram/view/'+this.state.id}> 
+                                        <Button><Icon type="eye" /> Просмотр</Button>
+                                    </Link>
+                                </div>
                             </div>
                         </Col>
                     </Row>
@@ -220,8 +242,10 @@ class DailyWorkoutDetails extends Component {
                                                 itemLayout="horizontal"
                                                 dataSource={this.state.trainingDescriptions}
                                                 renderItem={item => (
-                                                <List.Item actions={[<a key="list-loadmore-more">Вверх</a>,
-                                                <a key="list-loadmore-more">Вниз</a>, 
+                                                <List.Item actions={[
+                                                // <a key="list-loadmore-more">Вверх</a>,
+                                                // <Link to={'/trainingprogram/view/'+item.id}>Вид</Link>, 
+
                                                 <a onClick={this.showDrawerVal.bind(this, item.id)} key="list-loadmore-more">Изменить</a>,
                                                 <a onClick={this.deleteTrainingDescription.bind(this, item.id)} key="list-loadmore-more">Удалить</a>]}>
                                                     <List.Item.Meta

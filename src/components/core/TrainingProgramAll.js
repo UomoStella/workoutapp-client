@@ -162,7 +162,7 @@ class TrainingProgramAll extends Component {
                         additionInfo={<div>
                                         <p className="p-name">{value.name}</p>
                                         <p className="p-addition">Продолжжительность: {value.durationDays} дн.</p>
-                                        <p>{value.description}</p>
+                                        <p className="p-description">{value.description}</p>
                                     </div>}
                         />
                 </Col>

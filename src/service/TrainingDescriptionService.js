@@ -25,6 +25,10 @@ export class TrainingDescriptionService {
         return service.getRestClient().post(api_url+"/delete", data);
     }
     
+
+    getTrainingDescriptionView(dailyid){
+        return service.getRestClientNoToken().get(api_url+"/view", { params: { dailyid : dailyid}});
+    }
     
 
 }

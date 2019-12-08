@@ -34,20 +34,12 @@ class TrainingDescriptionEditForm extends Component {
         this.state = {
             id: '',
             leadTime: 0,
-            extraWeight: 0,
+            extraWeight: '',
             numberRepetitions: '',
             dailyWorkoutId: '',
             exerciseId: '',
+            orderExercises: '',
             exercises: [],
-
-            // private Long id;
-            // private Integer numberRepetitions;
-            // private Float leadTime;
-            // private Float extraWeight;
-            // private Long orderExercises;
-            // private Long dailyWorkoutId;
-            // private Long exerciseId;
-
 
             isLoading: true,
             serverError: false,
@@ -75,6 +67,7 @@ class TrainingDescriptionEditForm extends Component {
                     leadTime: trainingDescription.leadTime,
                     extraWeight: trainingDescription.extraWeight,
                     numberRepetitions: trainingDescription.numberRepetitions,
+                    orderExercises:  trainingDescription.orderExercises,
                     dailyWorkoutId: this.state.dailyWorkoutId,
                     exerciseId: trainingDescription.exerciseId,
                 };
@@ -132,6 +125,7 @@ class TrainingDescriptionEditForm extends Component {
                 leadTime: trainingDescription.leadTime,
                 extraWeight: trainingDescription.extraWeight,
                 numberRepetitions: trainingDescription.numberRepetitions,
+                orderExercises: trainingDescription.orderExercises,
                 dailyWorkoutId: dailyid,
                 exerciseId: trainingDescription.exerciseId,
 
@@ -187,29 +181,6 @@ class TrainingDescriptionEditForm extends Component {
         return (
             <div>
                 <Form onSubmit={this.handleSubmit}>
-                    <FormItem label="Время выполнения, секунды" hasFeedback>
-                        {getFieldDecorator('leadTime', {
-                            initialValue: this.state.leadTime,
-                        })(
-                            <InputNumber placeholder="Время выполнения, секунды" style={{width: '100%'}} min={0} />
-                        )}
-                    </FormItem>
-
-                    <FormItem label="Дополнительный вес, кг">
-                        {getFieldDecorator('extraWeight', {
-                            initialValue: this.state.extraWeight,
-                        })(
-                            <InputNumber placeholder="Дополнительный вес, кг" style={{width: '100%'}} min={0} />
-                        )}
-                    </FormItem>
-
-                    <FormItem label="Количество повторений">
-                        {getFieldDecorator('numberRepetitions', {
-                            initialValue: this.state.numberRepetitions,
-                        })(
-                            <InputNumber placeholder="Количество повторений" style={{width: '100%'}} min={0} />
-                        )}
-                    </FormItem>
 
                     {!this.state.exercises.length == 0 ? 
                         <FormItem label="Упражнение" hasFeedback>
@@ -233,8 +204,37 @@ class TrainingDescriptionEditForm extends Component {
                         null
                     }
 
-                
-                    
+                    <FormItem label="Номер по порядку" hasFeedback>
+                        {getFieldDecorator('orderExercises', {
+                            initialValue: this.state.orderExercises,
+                        })(
+                            <InputNumber placeholder="Номер по порядку" style={{width: '100%'}} min={0} />
+                        )}
+                    </FormItem>
+
+                    <FormItem label="Время выполнения, секунды" hasFeedback>
+                        {getFieldDecorator('leadTime', {
+                            initialValue: this.state.leadTime,
+                        })(
+                            <InputNumber placeholder="Время выполнения, секунды" style={{width: '100%'}} min={0} />
+                        )}
+                    </FormItem>
+
+                    <FormItem label="Дополнительный вес, кг">
+                        {getFieldDecorator('extraWeight', {
+                            initialValue: this.state.extraWeight,
+                        })(
+                            <Input placeholder="Дополнительный вес, кг" style={{width: '100%'}} min={0} />
+                        )}
+                    </FormItem>
+
+                    <FormItem label="Количество повторений">
+                        {getFieldDecorator('numberRepetitions', {
+                            initialValue: this.state.numberRepetitions,
+                        })(
+                            <Input placeholder="Количество повторений" style={{width: '100%'}} min={0} />
+                        )}
+                    </FormItem>
 
                     <FormItem>
                         <Button icon="save" type="primary" htmlType="submit" size="large">Сохранить</Button>

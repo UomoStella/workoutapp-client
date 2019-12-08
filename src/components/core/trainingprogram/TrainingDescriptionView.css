@@ -1,0 +1,29 @@
+.dayliExcersise {
+    margin-bottom: 20px;
+}
+
+.exercises-addition{
+    border-top: 1px solid #e0ccff;
+}
+
+.exercises-addition table thead th,
+.exercises-addition table tbody td {
+    border-left: 1px solid #e0ccff;
+    padding: 0 15px;
+}
+.title-exercises{
+    margin-top: 3px;
+    margin-bottom: 0px;
+}
+
+.title-description{
+    margin-top: 5px;
+    margin-bottom: 0px;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.exercises-element{
+    border-bottom: 1px dashed #e0ccff;
+    padding-bottom: 20px;
+}
