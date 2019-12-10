@@ -21,6 +21,8 @@ import DailyWorkoutDetails from './components/core/dailyworkout/DailyWorkoutDeta
 import TrainingProgramAll from './components/core/TrainingProgramAll';
 
 import TrainingDescriptionView from './components/core/trainingprogram/TrainingDescriptionView';
+import TrainingProgramView from './components/TPview/TrainingProgramView';
+
 
 
 const Footer = Layout.Footer;
@@ -74,13 +76,15 @@ class App extends Component {
 
 
   
-  handleLogin() {
+   handleLogin = () => {
     notification.success({
       message: 'Сообщение',
       description: "Вы успешно вошли в учетную запись.",
     });
     this.loadCurrentUser();
-    this.props.history.push("/");
+  
+    // this.props.history.push("/");
+    window.location.assign("/");
   }
 
   handleLogout(redirectTo="/", notificationType="success", description="Вы успешно вышли с учетной записи.") {
@@ -160,8 +164,10 @@ class App extends Component {
 
                 <Route path="/trainingprogram/all" render={(props) => 
                     <TrainingProgramAll handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
-                <Route path="/trainingprogram/view/:dailyid" render={(props) => 
+                <Route path="/trainingprogram/view/:dailyid/:trainingDescriptionid?" render={(props) => 
                     <TrainingDescriptionView handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                <Route path="/trainingprogram/viewall" render={(props) => 
+                    <TrainingProgramView handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
 
             
                 

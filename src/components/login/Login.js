@@ -36,6 +36,7 @@ class LoginForm extends Component {
 
     handleSubmit(event) {
         event.preventDefault();   
+
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 const loginRequest = Object.assign({}, values);

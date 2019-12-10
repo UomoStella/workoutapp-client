@@ -26,8 +26,9 @@ export class TrainingDescriptionService {
     }
     
 
-    getTrainingDescriptionView(dailyid){
-        return service.getRestClientNoToken().get(api_url+"/view", { params: { dailyid : dailyid}});
+    getTrainingDescriptionView(dailyid, trainingDescriptionid){
+        return service.getRestClientNoToken().get(api_url+"/view", { params: { dailyid : dailyid,
+            trainingDescriptionid:trainingDescriptionid}});
     }
     
 

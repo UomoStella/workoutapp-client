@@ -16,6 +16,7 @@ class TrainingDescriptionView extends Component {
         
         this.state = {
             dailyid: '',
+            trainingDescriptionid: '',
             workoutResponse: {},
             trainingDescriptions: [],
             
@@ -30,16 +31,18 @@ class TrainingDescriptionView extends Component {
 
     componentDidMount() {
         const dailyid = this.props.match.params.dailyid;
+
+        const trainingDescriptionid = this.props.match.params.trainingDescriptionid;
         // console.log(dailyid);
-        this.handleTrainingDescriptionView(dailyid);
+        this.handleTrainingDescriptionView(dailyid, trainingDescriptionid);
     }
 
-    handleTrainingDescriptionView(dailyid){
+    handleTrainingDescriptionView(dailyid, trainingDescriptionid){
         this.setState({
             isLoading: true,
         });
-
-        this.trainingDescriptionService.getTrainingDescriptionView(dailyid)
+    
+        this.trainingDescriptionService.getTrainingDescriptionView(dailyid, trainingDescriptionid)
         .then(response => {
             console.log('111');
             console.log(response.data);
@@ -73,8 +76,6 @@ class TrainingDescriptionView extends Component {
             }
         });    
     }
-
-
 
 
     render() {   

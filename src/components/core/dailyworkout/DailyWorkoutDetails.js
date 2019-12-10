@@ -203,7 +203,7 @@ class DailyWorkoutDetails extends Component {
             return (<ServerError />);
         }
 
-        console.log(this.state.IsPrivate);
+        console.log(this.state.trainingDescriptions);
         return (
             <div>
                     <Row  gutter={[16, 16]}>
@@ -219,7 +219,7 @@ class DailyWorkoutDetails extends Component {
                                 </Link>
                                 <br/>
                                 <div className="margintop10">
-                                    <Link to={'/trainingprogram/view/'+this.state.id}> 
+                                    <Link to={'/trainingprogram/view/'+this.state.id}>
                                         <Button><Icon type="eye" /> Просмотр</Button>
                                     </Link>
                                 </div>
@@ -244,8 +244,7 @@ class DailyWorkoutDetails extends Component {
                                                 renderItem={item => (
                                                 <List.Item actions={[
                                                 // <a key="list-loadmore-more">Вверх</a>,
-                                                // <Link to={'/trainingprogram/view/'+item.id}>Вид</Link>, 
-
+                                                <Link to={'/trainingprogram/view/'+item.dailyWorkoutResponse.id +'/'+ item.id}>Вид</Link>, 
                                                 <a onClick={this.showDrawerVal.bind(this, item.id)} key="list-loadmore-more">Изменить</a>,
                                                 <a onClick={this.deleteTrainingDescription.bind(this, item.id)} key="list-loadmore-more">Удалить</a>]}>
                                                     <List.Item.Meta

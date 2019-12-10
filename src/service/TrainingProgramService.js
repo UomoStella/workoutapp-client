@@ -6,6 +6,11 @@ export class TrainingProgramService {
     getTrainingProgramAll(pageNum){
         return service.getRestClient().get(api_url+"/all", { params: { paginationpage : pageNum}});
     }
+    
+    getTrainingProgramVIEW(pageNum){
+        return service.getRestClient().get(api_url+"/view", { params: { paginationpage : pageNum, 
+            size: 18}});
+    }
 
     postTrainingProgramDelete(data){
         return service.getRestClient().post(api_url+"/delete", data);
