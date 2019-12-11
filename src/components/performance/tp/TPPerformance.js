@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { Row, Col, notification, Pagination} from 'antd';
-// import './ExercisesList.css';
-import { TrainingProgramService } from '../../service/TrainingProgramService';
-import TPViewElement from './TPViewElement';
-import List from '../templats/List';
-import LoadingIndicator from '../LoadingIndicator';
-import ServerError  from '../../error/ServerError';
-import NotFound from '../../error/NotFound';
+import { Row, Col, notification, Pagination, Button} from 'antd';
+import { PerformanceService } from '../../../service/PerformanceService';
+import TPPElement from './TPPElement';
+import { ACCESS_TOKEN } from '../../../constants';
+import List from '../../templats/List';
+import LoadingIndicator from '../../LoadingIndicator';
+import ServerError  from '../../../error/ServerError';
+import NotFound from '../../../error/NotFound';
 
-class TrainingProgramView extends Component {
+class TPPerformance extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            trainingProgramList : [],
+            content : [],
             page: '',
             size: '',
             totalElements: '',
@@ -24,22 +24,27 @@ class TrainingProgramView extends Component {
             notFound: false,
         };
 
-        this.trainingProgramService = new TrainingProgramService();
+        this.performanceService = new PerformanceService();
 
+        this.paginationChange = this.paginationChange.bind(this);
         this.getContentVIEW = this.getContentVIEW.bind(this);
     }
 
-
+    paginationChange = (page, pageSize) => {
+        const tpID = this.state.tpID;
+        const pageInx = page - 1;
+        this.getContentVIEW(pageInx);
+    }
 
     getContentVIEW(pageNum){
         this.setState({
             isLoading: true,
         });
 
-        this.trainingProgramService.getTrainingProgramVIEW(pageNum)
+        this.performanceService.getAllTPP(pageNum)
         .then(response => {
             this.setState({
-                trainingProgramList: response.data.content,
+                content: response.data.content,
                 page: pageNum,
                 size: response.data.size,
                 totalElements: response.data.totalElements,
@@ -47,10 +52,6 @@ class TrainingProgramView extends Component {
                 last: response.data.last,
 
                 isLoading: false,
-            });
-            notification.success({
-                message: 'Сообщение',
-                description: 'Упражнение успешно удалено.'
             });
         }).catch(error => {
             notification.error({
@@ -74,6 +75,10 @@ class TrainingProgramView extends Component {
     }
 
     componentDidMount() {
+        if(!localStorage.getItem(ACCESS_TOKEN)) {
+            this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
+        }
+
         this.getContentVIEW();
     }
 
@@ -93,31 +98,25 @@ class TrainingProgramView extends Component {
         const totalPages = 10 * this.state.totalPages;
 
         const valueList = [];
-        this.state.trainingProgramList.forEach((value) => { 
+        this.state.content.forEach((value) => { 
             valueList.push(
                 <Col md={8} gutter={[16, 16]} >
-                    <TPViewElement id={value.id}
-                        name={value.name}
-                        base64Image={value.base64Image}
-                        durationDays={value.durationDays}
-                        username={value.username}
-                        genderName={value.genderName}/>
+                    <TPPElement id={value.id}
+                        tpId={value.tpId}
+                        dwuId={value.dwuId}
+                        tpName={value.tpName}
+                        tpBase64Image={value.tpBase64Image}
+                        dwResponse={value.dwResponse}/>
                 </Col>
             );
         });
         
         return (
             <Row  gutter={[16, 16]}>
-                {/* <Col span={24}>
-                    <div style={{textAlign: 'right'}}>
-                        <Button type="primary"><Link to={'/trainingprogram/edit'}>Добавить программу</Link></Button> 
-                    </div>
-                </Col> */}
-        
                 <Col span={24}>
                     {!this.state.isLoading ?
                     <div>
-                        {this.state.trainingProgramList.length != 0 ?
+                        {this.state.content.length != 0 ?
                         <Row gutter={16} className="tpview-list">
                             <List  Content={valueList} />
                         </Row>
@@ -138,4 +137,4 @@ class TrainingProgramView extends Component {
     }
 }
 
-export default TrainingProgramView;
+export default TPPerformance;

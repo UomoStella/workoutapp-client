@@ -258,7 +258,7 @@ class ExercisesForm extends Component {
                 <Form.Item label="Тип тренировки" hasFeedback>
                 {getFieldDecorator('typeTrainingId', {
                     initialValue: this.state.typeTrainingId,
-                    rules: [{ required: true, whitespace: true, message: 'Выберите тип тренировки' }],
+                    // rules: [{ required: true, whitespace: true, message: 'Выберите тип тренировки' }],
                 })(
                     <Select placeholder="Выберите тип тренировки"
                         onChange={this.handleProvinceChange}>
@@ -275,7 +275,7 @@ class ExercisesForm extends Component {
                 <Form.Item label="Подтип тренировки" hasFeedback>
                 {getFieldDecorator('subtypeTrainingId', {
                     initialValue: this.state.subtypeTrainingId,
-                    rules: [{ required: true,  message: 'Выберите подтип тренировки' }],
+                    // rules: [{ required: true,  message: 'Выберите подтип тренировки' }],
                 })(
                     <Select placeholder="Выберите подтип тренировки">
                        {!this.state.subtypeTrainingList.length == 0 ? 

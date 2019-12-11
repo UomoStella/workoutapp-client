@@ -29,6 +29,17 @@ class AppHeader extends Component {
                 <Icon type="rise" /><span>Программа тренировок</span>
               </Link>
             </Menu.Item>,
+              <Menu.Item key="/trainingprogram/viewall">
+              <Link to="/trainingprogram/viewall">
+                <Icon type="eye" /><span>Просмотр</span>
+              </Link>
+            </Menu.Item>,
+            <Menu.Item key="/performance/tp">
+              <Link to="/performance/tp">
+                <Icon type="eye" /><span>Дневное задание</span>
+              </Link>
+            </Menu.Item>,
+
 
 
             <Menu.Item key="/">

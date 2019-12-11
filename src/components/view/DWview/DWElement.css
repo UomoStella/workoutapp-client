@@ -1,0 +1,61 @@
+/* .col-tp_element{
+    position: relative;
+} */
+
+
+.col-tp_element {
+    border: 1px solid #e0ccff;
+    border-radius: 3px;
+    display: inline-grid;
+    overflow: auto;
+    position: relative;
+    width: 100%;
+    background: #dcd0ff;
+}
+
+
+.holder{
+    position:relative;   
+    width: 100%;
+    height:200px;
+    background:#e0ccff;
+}
+.holder .dayname{
+    text-align: center;
+    font-size: 5em;
+    font-weight: bold;
+    padding-top: 25px;
+    margin-bottom: 0px;
+}
+.holder .dayspan{
+   font-weight: bold;
+   padding: 7px;
+   font-size: 1.5em;
+}
+
+
+.block .clip {
+    /* white-space: nowrap;  */
+    overflow: hidden; /* Обрезаем все, что не помещается в область */
+    padding: 5px; /* Поля вокруг текста */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+   }
+
+.block{
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;
+    top:0;
+    background:#dcd0ff;
+    padding:5px;
+    display:none;
+}
+.holder:hover .block{
+    display:block;
+}
+.holder:hover .dayname,
+.holder:hover .dayspan{
+    display:none;
+}
+

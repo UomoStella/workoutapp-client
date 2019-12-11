@@ -21,9 +21,10 @@ import DailyWorkoutDetails from './components/core/dailyworkout/DailyWorkoutDeta
 import TrainingProgramAll from './components/core/TrainingProgramAll';
 
 import TrainingDescriptionView from './components/core/trainingprogram/TrainingDescriptionView';
-import TrainingProgramView from './components/TPview/TrainingProgramView';
-
-
+import TrainingProgramView from './components/view/TPview/TrainingProgramView';
+import DailyWorkoutView from './components/view/DWview/DailyWorkoutView';
+import TPPerformance from './components/performance/tp/TPPerformance';
+import DWUPerformance from './components/performance/dw/DWUPerformance';
 
 const Footer = Layout.Footer;
 const { Content } = Layout;
@@ -129,7 +130,7 @@ class App extends Component {
       this.state.isLoading ? (
           <LoadingIndicator />    
         ): 
-        <Content style={{ padding: '0 90px', marginTop: 20 }}>
+        <Content className="main-div" style={{ padding: '0 90px', marginTop: 20 }}>
               <div style={{ background: '#fff', padding: 24, minHeight: 1000 }}>
                 <Switch>      
                   <Route exact path="/"/>
@@ -168,7 +169,12 @@ class App extends Component {
                     <TrainingDescriptionView handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
                 <Route path="/trainingprogram/viewall" render={(props) => 
                     <TrainingProgramView handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
-
+                <Route path="/dailyworkout/viewall/:tpid" render={(props) => 
+                    <DailyWorkoutView handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                <Route path="/performance/tp" render={(props) => 
+                    <TPPerformance handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                <Route path="/performance/dwu/:dwuid" render={(props) => 
+                    <DWUPerformance handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
             
                 
 

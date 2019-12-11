@@ -3,6 +3,10 @@ import {withRouter, Link } from 'react-router-dom';
 import { notification, Button, Row, Col, Tabs, Icon, Upload, Input, List, Skeleton } from 'antd';
 
 import { TrainingProgramService } from '../../../service/TrainingProgramService';
+import { DailyWorkoutService } from '../../../service/DailyWorkoutService';
+
+
+
 import { FileService } from '../../../service/FileService';
 
 import UserSelectModal from './UserSelectModal';
@@ -49,10 +53,32 @@ class TrainingProgramDetails extends Component {
         this.saveUserPrivate = this.saveUserPrivate.bind(this);
         this.deleteUserPrivate = this.deleteUserPrivate.bind(this);
         this.handleGetPrivateList = this.handleGetPrivateList.bind(this);
-        
+        this.deleteDailyWorkout = this.deleteDailyWorkout.bind(this);
 
         this.trainingProgramService = new TrainingProgramService();
+        this.dailyWorkoutService = new DailyWorkoutService();
+        
         this.fileService = new FileService()
+    }
+
+
+    deleteDailyWorkout(dwId){
+        const data = new FormData();
+            data.append('dwid', dwId);
+
+        this.dailyWorkoutService.postDeleteDailyWorkout(data)
+        .then((response) => {
+            notification.success({
+                message: 'Сообщение',
+                description: "Запись удален.",
+            });
+            this.getTrainingProgramDetails(this.state.id)
+        }).catch((error) => {
+            notification.error({
+                message: 'Ошибка',
+                description: 'Не удалось удалить!'
+            });
+        });  
     }
 
     saveUserPrivate = (username) => {
@@ -313,7 +339,12 @@ class TrainingProgramDetails extends Component {
                                             <List.Item actions={[<Link to={item.id != null ?
                                             '/workout/details/edit/'+ item.trainingProgramId+'/'+ item.day
                                             : 
-                                            '/workout/edit/'+ item.trainingProgramId+'/'+ item.day}>Изменить</Link>, <span>Очистить</span>]}>
+                                            '/workout/edit/'+ item.trainingProgramId+'/'+ item.day}>Изменить</Link>, 
+                                            <span>{item.id != null ?
+                                                <a onClick={this.deleteDailyWorkout.bind(this, item.id)} key="list-loadmore-more">Очистить</a>
+                                                :
+                                                null}    
+                                            </span>]}>
                                                 <List.Item.Meta
                                                 title={<span>{item.day} день ({item.id == null ? 'Нет данных' : item.name})</span>}
                                                 description={<span>{item.description}</span>}

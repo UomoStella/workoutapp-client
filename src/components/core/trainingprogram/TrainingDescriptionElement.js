@@ -3,6 +3,8 @@ import { Icon, Tag, Tabs, Typography, Row, Col } from 'antd';
 import { API_BASE_URL } from '../../../constants';
 import ExcersicesLogo from '../../../resources/excersices.png';
 import VideoPlayer from '../../player/VideoPlayer';
+import './TrainingDescriptionView.css';
+
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -69,9 +71,8 @@ class TrainingDescriptionElement extends Component {
 
 
 
-
     render() {   
- 
+       
         const linkVideoFile = API_BASE_URL + "/fields/video/" + this.state.videoFileLink;
         const imageBase64 = "data:image/png;base64, "+ this.state.imageBase64;
         return (
@@ -116,14 +117,17 @@ class TrainingDescriptionElement extends Component {
                             : null
                         }
                         {this.state.linkVideo != null && this.state.linkVideo.length != 0 ?
-                            <TabPane tab={<span><Icon type="youtube" /> Ссылка на видео</span>} key="3" >                                    
-                                        <VideoPlayer url={this.state.linkVideo} playing={false} />
+                            <TabPane tab={<span><Icon type="youtube" /> Видео</span>} key="3" >                                    
+                                        <VideoPlayer url={this.state.linkVideo} playing={true} />
                             </TabPane>
                             :
                             null
                         }
                     </Tabs>
                     </Col>
+                    {this.state.numberRepetitions 
+                        || this.state.leadTime 
+                        || this.state.extraWeight ?
                     <Col md={24} className="exercises-addition">    
                         <table>
                             <thead>
@@ -142,6 +146,7 @@ class TrainingDescriptionElement extends Component {
                             </tbody>
                         </table>                       
                     </Col>
+                    : null}
                     <Col md={24}>
                             {this.state.subtypeTrainingName ?
                                 <Tag color="purple">{this.state.subtypeTrainingName}</Tag>

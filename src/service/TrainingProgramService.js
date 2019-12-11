@@ -49,5 +49,10 @@ export class TrainingProgramService {
         return service.getRestClient().get("/training/exercises/all/list");
     }
 
+    postAddTPtoUser(data){
+        return service.getRestClient().post(api_url+"/addtptouser", data);
+    }
+
+    
 
 }

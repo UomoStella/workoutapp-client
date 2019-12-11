@@ -3,7 +3,7 @@ import { Button, Select , notification, Row, Col } from 'antd';
 
 import { TrainingDescriptionService } from '../../../service/TrainingDescriptionService';
 
-import './TrainingDescriptionView.css';
+// import './TrainingDescriptionView.css';
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
@@ -106,11 +106,20 @@ class TrainingDescriptionView extends Component {
                         <h2>Программа тренировок: {this.state.workoutResponse.trainingProgramName}</h2>
                         <h2>{this.state.workoutResponse.name}</h2>
                     </div>
-                    <Col span={4}></Col>
-                    <Col span={16}>
-                    {valueList}
-                   </Col>
-                   <Col span={4}></Col>
+                    {this.state.trainingDescriptions.length != 0 ?
+                    <div>
+                        <Col span={4}></Col>
+                        <Col span={16}>
+                            {valueList}
+                        </Col>
+                        <Col span={4}></Col>
+                    </div>
+                    :
+                    <div>
+                        <h4>{this.state.workoutResponse.description}</h4>
+                    </div>
+                    }
+                    
                 </Row>
 
         );
