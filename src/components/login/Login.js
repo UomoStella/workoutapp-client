@@ -11,10 +11,12 @@ class Login extends Component {
     render() {
         const AntWrappedLoginForm = Form.create()(LoginForm)
         return (
-            <div className="login-container">
-                <h1 className="page-title">Login</h1>
-                <div className="login-content">
-                    <AntWrappedLoginForm handleMessage={this.props.handleMessage} onLogin={this.props.onLogin} />
+            <div className="content-div">
+                <div className="login-container">
+                    <h1 className="page-title">Login</h1>
+                    <div className="login-content">
+                        <AntWrappedLoginForm handleMessage={this.props.handleMessage} onLogin={this.props.onLogin} />
+                    </div>
                 </div>
             </div>
         );

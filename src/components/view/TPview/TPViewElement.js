@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
 import { Button, Row, Col, Icon } from 'antd';
-import ExcersicesLogo from '../../../resources/excersices.png';
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 import './TPViewElement.css';
 
 class TPViewElement extends Component {
@@ -63,9 +63,9 @@ class TPViewElement extends Component {
                     <Link to={"/dailyworkout/viewall/"+this.state.id}>
                             <div className="div-image">
                                 {this.state.base64Image.length != 0 ?
-                                    <img src={imageBase64} height="300" alt="Red dot" />
+                                    <img src={imageBase64} height="280" alt="Red dot" />
                                     :
-                                    <img src={ExcersicesLogo} height="300" alt="Red dot" />
+                                    <img src={ExcersicesLogo} height="280" alt="Red dot" />
                                 }
                                 <span>{this.state.name}</span>
                             </div>

@@ -18,7 +18,7 @@ function fetch(value, callback) {
 
   function fake() {
 
-    if(value == undefined || value.lenght == 0)
+    if(value == undefined || value.length == 0)
         return;
 
     getAllUserByUsername(value)

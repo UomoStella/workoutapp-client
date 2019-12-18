@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Select, Form, Input,  InputNumber , message, notification , Switch } from 'antd';
-
+import { Button, Select, Form, Input,  InputNumber , Breadcrumb, notification , Switch } from 'antd';
+import {withRouter, Link } from 'react-router-dom';
 import { TrainingProgramService } from '../../../service/TrainingProgramService';
 import { ACCESS_TOKEN } from '../../../constants';
 //ERRORS
@@ -19,10 +19,28 @@ class TrainingProgramEdit extends Component {
 
     render() {
         const treningId = this.props.match.params.treningId; 
-
         const AntWrappedLoginForm = Form.create()(TrainingProgramEditForm)
+
+        const breadcrumb = [];
+        breadcrumb.push(<Breadcrumb.Item><Link to={'/trainingprogram/all'}>Список программ</Link></Breadcrumb.Item>);
+        if(treningId == null){
+            breadcrumb.push(<Breadcrumb.Item><Link to={'/trainingprogram/edit'}>Добавление программы тренировок</Link></Breadcrumb.Item>);
+        }else{
+            breadcrumb.push(<Breadcrumb.Item><Link to={'/trainingprogram/details/'+treningId}>Программа тренировок</Link></Breadcrumb.Item>);
+            breadcrumb.push(<Breadcrumb.Item><Link to={'/trainingprogram/edit/'+treningId}>Редактирование программы тренировок</Link></Breadcrumb.Item>);
+        }
+
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} treningId={treningId}  />
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        {breadcrumb}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} treningId={treningId}  />
+                </div>
+            </div>
         );
     }
 }

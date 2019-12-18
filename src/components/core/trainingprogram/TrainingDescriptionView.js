@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Select , notification, Row, Col } from 'antd';
+import {withRouter, Link } from 'react-router-dom';
+import { notification, Row, Col } from 'antd';
+import { Container } from 'react-bootstrap';
 
 import { TrainingDescriptionService } from '../../../service/TrainingDescriptionService';
 
@@ -44,8 +46,6 @@ class TrainingDescriptionView extends Component {
     
         this.trainingDescriptionService.getTrainingDescriptionView(dailyid, trainingDescriptionid)
         .then(response => {
-            console.log('111');
-            console.log(response.data);
             const workoutResponse = response.data.workoutResponse;
             const trainingDescriptions = response.data.trainingDescriptions;
             this.setState({
@@ -101,32 +101,36 @@ class TrainingDescriptionView extends Component {
         });
 
         return (
+            <div className="content-div">
                 <Row>
                     <div>
                         <h2>Программа тренировок: {this.state.workoutResponse.trainingProgramName}</h2>
-                        <h2>{this.state.workoutResponse.name}</h2>
+                        {this.state.workoutResponse && this.state.workoutResponse.rationDayId ?
+                            <h4>Рацион: <Link to={'/ration/view/'+ this.state.workoutResponse.rationDayId}>
+                                <span>{this.state.workoutResponse.rationDayName}</span></Link>
+                            </h4>
+                        : null}
+                        <h4>{this.state.workoutResponse.name}</h4>
                     </div>
                     {this.state.trainingDescriptions.length != 0 ?
                     <div>
-                        <Col span={4}></Col>
-                        <Col span={16}>
-                            {valueList}
-                        </Col>
-                        <Col span={4}></Col>
+                        <Container>
+                            <Col className="borderLeftRight" lg={24} md={3}>
+                                {valueList}
+                            </Col>
+                        </Container>
                     </div>
                     :
                     <div>
-                        <h4>{this.state.workoutResponse.description}</h4>
+                        <p className="whiteSpace">{this.state.workoutResponse.description}</p>
                     </div>
-                    }
-                    
+                    }  
                 </Row>
+            </div>
 
         );
     }
 }
 
 
-
-export default TrainingDescriptionView;
-
+export default withRouter(TrainingDescriptionView);

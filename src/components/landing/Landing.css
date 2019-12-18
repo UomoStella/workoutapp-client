@@ -1,0 +1,116 @@
+/* For demo */
+.ant-carousel .slick-slide {
+    text-align: center;
+    /* max-height: 40em; */
+    line-height: 40em;
+    /* background: #364d79; */
+
+    /* overflow: hidden;
+    position: relative; */
+  }
+  .first-page-carousel{
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      text-align: center;
+      height: 40em;
+  }
+  
+  .first-page-carousel h3 {
+    color: #fff;
+    padding-top: 10em;
+    font-size: 1.8em;
+  }
+
+  .description-div {
+      height: 100%;
+  }
+
+
+.sp {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+.bg2 {
+    background-color: #f3f6fa;
+}
+.section-title {
+    text-align: center;
+    font-size: 16px;
+    color: #7d91aa;
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+.section-title h2 {
+    margin: 0 0 5px;
+    font-size: 40px;
+    font-weight: 700;
+    color: #222538;
+}
+
+.single-service, .single-service-2, .single-service-3 {
+    margin: 15px 0;
+}
+
+.single-service .inner, .single-service-2 .inner, .single-service-3 .inner {
+    background-color: #fff;
+    border-radius: 7px;
+    padding: 30px;
+}
+.single-service .inner .title, .single-service-2 .inner .title, .single-service-3 .inner .title {
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.single-service .inner .content, .single-service-2 .inner .content, .single-service-3 .inner .content {
+    font-weight: 300;
+    font-size: 14px;
+    color: #2d3666;
+    line-height: 26px;
+}
+
+.single-service .inner .title .icon, .single-service-2 .inner .title .icon, .single-service-3 .inner .title .icon {
+    float: left;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.single-service .inner .title h4:hover {
+    color: #6600ff;
+}
+
+.portfolio-area{
+    background: #fff;
+}
+
+.tp-mode-btn-div{
+    margin-top: 40px;
+    text-align: center;
+}
+
+.bg2 {
+    background-color: #f9f0ff;
+}
+.faq {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.faq .single-item {
+    background-color: #fff;
+    padding: 20px;
+    padding-left: 50px;
+    line-height: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    position: relative;
+}
+.faq .single-item h4 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.text-center{
+    text-align: center;
+}

@@ -210,7 +210,10 @@ class DailyWorkoutDetails extends Component {
                         <Col md={18}>
                             <Title level={3}>{this.state.trainingProgramName} (день {this.state.day})</Title>
                             <p>Наименование: <span>{this.state.name}</span></p>
-                            <p>Описание: <span>{this.state.description}</span></p>
+                            {this.state.rationDayId ?
+                                <p>Рацион: <Link to={'/ration/view/'+ this.state.rationDayId}><span>{this.state.rationDayName}</span></Link></p>
+                            : null}
+                            <p>Описание: <span className="whiteSpace">{this.state.description}</span></p>
                         </Col>
                         <Col md={6}>
                             <div style={{textAlign: 'right'}}>

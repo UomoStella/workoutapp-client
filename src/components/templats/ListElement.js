@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
 import { Button, Row, Col, Modal } from 'antd';
 import LoadingIndicator from '../LoadingIndicator';
-import ExcersicesLogo from '../../resources/excersices.png';
+import ExcersicesLogo from '../../resources/excersices.jpg';
+import FOOD from '../../resources/FOOD.jpg';
+
 
 const {confirm} = Modal;
 
@@ -12,6 +14,8 @@ class ListElement extends Component {
         this.state = {
             id : this.props.id,
             imageBase64: this.props.imageBase64,
+
+            ifFood: this.props.ifFood,
 
             isLoading: false
         }
@@ -64,7 +68,13 @@ class ListElement extends Component {
                             {!this.state.imageBase64.length == 0 ?
                                 <img src={imageBase64}  alt="Red dot" />
                                 :
-                                <img src={ExcersicesLogo} alt="Red dot" />
+                                <div>
+                                {this.state.ifFood ?
+                                    <img src={FOOD} alt="Red dot" />
+                                    :
+                                    <img src={ExcersicesLogo} alt="Red dot" />
+                                }
+                                </div>
                             }
                         </Col>
                     

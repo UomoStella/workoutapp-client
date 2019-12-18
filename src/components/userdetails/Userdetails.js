@@ -1,21 +1,76 @@
 import React, { Component } from 'react';
 import { FileService } from '../../service/FileService';
-import { getUserDetails, userDetailsPOST } from '../../until/APIUtils';
-import { Button, Radio, Form, Input, Upload, Icon, message, notification  } from 'antd';
+import { getUserDetails } from '../../until/APIUtils';
+import {UserService} from '../../service/UserService';
+import { Button, Radio, Form, Input, Row, Col, Breadcrumb, notification, Drawer  } from 'antd';
 import './Userdetails.css';
+import { Link } from 'react-router-dom';
+
 import ServerError  from '../../error/ServerError';
 import LoadingIndicator from '../LoadingIndicator';
 import NotFound from '../../error/NotFound';
 import { ACCESS_TOKEN } from '../../constants';
 
-
 const FormItem = Form.Item;
 
 class Userdetails extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false,
+            currentUser: this.props.currentUser
+        }
+
+        this.showDrawer = this.showDrawer.bind(this);
+    }
+
+    showDrawer = () => {
+        console.log(this.props.currentUser);
+        this.setState({
+          visible: true,
+        });
+      };
+    
+    onCloseDrawer = () => {
+        this.setState({
+            visible: false,
+        });
+    };
+
     render() {
-        const AntWrappedLoginForm = Form.create()(UserdetailsForm)
+        const AntPasswordForm =  Form.create()(PasswordForm);
+        const AntWrappedLoginForm = Form.create()(UserdetailsForm);
+        
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout}/>
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        {this.state.currentUser ?
+                        <Breadcrumb.Item><Link to={'/users/'+this.state.currentUser.username}>Профиль</Link></Breadcrumb.Item>
+                        : null}
+                        <Breadcrumb.Item><Link to={'/user/details'}>Редактирование</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <Row gutter={[16, 16]}>
+                        <Col span={20}>
+                            {this.state.currentUser ?
+                            <h2>@{this.state.currentUser.username}</h2>
+                            : null}
+                        </Col>
+                        <Col span={4}>
+                            <div style={{textAlign: 'right'}}>
+                                <Button onClick={this.showDrawer}>Сменить пароль</Button>
+                            </div>
+                        </Col>
+                    </Row>
+                    <AntWrappedLoginForm handleMessage={this.props.handleMessage} handleLogout={this.props.handleLogout}/>
+                    <Drawer title="Смена пароля"
+                        placement="left" onClose={this.onCloseDrawer} visible={this.state.visible}>
+                            <AntPasswordForm />
+                    </Drawer>
+                </div>
+            </div>
         );
     }
 }
@@ -30,13 +85,15 @@ class UserdetailsForm extends Component {
             gender: '',
             height: '',
             weight: '',
-            image: null,
+            base64image: '',
+            image: [],
             name: '',
             username: '',
             email: '',
             selectedFile: null, 
-            isLoading: false,
             isAuthorization: false,
+
+            isLoading: false,
             serverError: false,
             notFound: false,
         }
@@ -49,6 +106,8 @@ class UserdetailsForm extends Component {
 
 
     handleSubmit(event) {
+        event.preventDefault();
+
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log(this.state.selectedFile);
@@ -60,15 +119,16 @@ class UserdetailsForm extends Component {
                     gender: userDetails.gender,
                     height: userDetails.height,
                     weight: userDetails.weight,
+                    name: userDetails.name
                 };
             
-                this.fileService.uploadUserDetailsToServer(userDetailsRequest)
-                .then(response => {
-                    notification.success({
-                        message: 'Polling App',
-                        description: "Данные успешно сохранены",
-                    });          
-                    this.props.history.push("/");
+                this.fileService.uploadUserDetailsToServer(userDetailsRequest).then(response => {
+                
+                    this.props.handleMessage(
+                        '/users/'+ this.state.username, 
+                        'success', 
+                        'Данные успешно сохранены'
+                    );
                 }).catch(error => {
                     notification.error({
                         message: 'Polling App',
@@ -92,10 +152,11 @@ class UserdetailsForm extends Component {
                 gender: response.gender,
                 height: response.height,
                 weight: response.weight,
-                image: response.image,
+                base64image: response.base64image,
                 name: response.name,
                 username: response.username,
                 email: response.email, 
+
                 isLoading: false,
                 notFound: false, 
                 serverError: false
@@ -123,44 +184,14 @@ class UserdetailsForm extends Component {
         }
         this.loadUserProfile();
     }
-    
-    handleUploadFile = (event) => {
-        this.setState({
-            selectedFile: event.target.files[0]
-        });
-
-        const data = new FormData();
-        //using File API to get chosen file
-        let file = event.target.files[0];
-        console.log("Uploading file", event.target.files[0]);
-        data.append('file', event.target.files[0]);
-        data.append('name', 'my_file');
-        data.append('description', 'this file is uploaded by young padawan');
-        let self = this;
-        //calling async Promise and handling response or error situation
-        this.fileService.uploadFileToServer(data).then((response) => {
-            console.log("File " + file.name + " is uploaded");
-        }).catch(function (error) {
-            console.log(error);
-            if (error.response) {
-                //HTTP error happened
-                console.log("Upload error. HTTP error/status code=",error.response.status);
-            } else {
-                //some other error happened
-               console.log("Upload error. HTTP error/status code=",error.message);
-            }
-        });
-    };
 
     render() {
         if(this.state.isLoading) {
             return <LoadingIndicator/>
         }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
@@ -168,83 +199,68 @@ class UserdetailsForm extends Component {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            // enctype="multipart/form-data"
             <Form onSubmit={this.handleSubmit}>
+                <FormItem>
+                    {getFieldDecorator('name', {
+                        initialValue: this.state.name
+                    })(
+                        <Input size="large" placeholder="Наименование"/>
+                    )}
+                </FormItem>
 
                 <FormItem>
                     {getFieldDecorator('lastName', {
-                        initialValue: this.state.lastName.value
+                        initialValue: this.state.lastName
                     })(
-                    <Input
-                        // prefix={<Icon type="user" />}
-                        size="large"
-                        placeholder="Фамилия"/>
+                        <Input size="large" placeholder="Фамилия"/>
                     )}
                 </FormItem>
 
                 <FormItem>
                     {getFieldDecorator('firstName', {
-                        initialValue: this.state.firstName.value
+                        initialValue: this.state.firstName
                     })(
-                    <Input
-                        // prefix={<Icon type="user" />}
-                        size="large"
-                        placeholder="Имя"/>
+                        <Input size="large" placeholder="Имя"/>
                     )}
                 </FormItem>
+
                 <FormItem>
                     {getFieldDecorator('middleName', {
-                        initialValue: this.state.middleName.value
+                        initialValue: this.state.middleName
                     })(
-                    <Input
-                        // prefix={<Icon type="user" />}
-                        size="large"
-                        placeholder="Отчество"/>
+                        <Input size="large" placeholder="Отчество"/>
                     )}
                 </FormItem>
 
                 <Form.Item label="Пол:">
-                {getFieldDecorator('gender', {
-                    initialValue: this.state.gender.value
-                })(
-                    <Radio.Group>
-                        <Radio value="MALE">Мужской</Radio>
-                        <Radio value="FEMALE">Женский</Radio>
-                    </Radio.Group>,
-                )}
+                    {getFieldDecorator('gender', {
+                        initialValue: this.state.gender
+                    })(
+                        <Radio.Group>
+                            <Radio value="MALE">Мужской</Radio>
+                            <Radio value="FEMALE">Женский</Radio>
+                        </Radio.Group>,
+                    )}
                 </Form.Item>
 
                 <FormItem>
                     {getFieldDecorator('height', {
-                        initialValue: this.state.height.value
+                        initialValue: this.state.height
                     })(
-                    <Input
-                        // prefix={<Icon type="user" />}
-                        size="large"
-                        placeholder="Рост"/>
+                        <Input size="large" placeholder="Рост"/>
                     )}
                 </FormItem>
 
                 <FormItem>
                     {getFieldDecorator('weight', {
-                        initialValue: this.state.weight.value
+                        initialValue: this.state.weight
                     })(
-                    <Input
-                        // prefix={<Icon type="user" />}
-                        size="large"
-                        placeholder="Вес"/>
+                        <Input size="large" placeholder="Вес"/>
                     )}
                 </FormItem>
-                {/* <Form.Item>{getFieldDecorator('file')(<Input />)}</Form.Item> */}
-
-                <input
-                    type="file"
-                    name="image"
-                    onChange={this.handleUploadFile}
-                />
-
+        
                 <FormItem>
-                    <Button type="primary" htmlType="submit" size="large" className="login-form-button">Сохранить</Button>
+                    <Button icon="save" type="primary" htmlType="submit" size="large">Сохранить</Button>
                 </FormItem>
             </Form>
         );
@@ -253,23 +269,92 @@ class UserdetailsForm extends Component {
 }
 
 
-// function getBase64(img, callback) {
-//     const reader = new FileReader();
-//     reader.addEventListener('load', () => callback(reader.result));
-//     reader.readAsDataURL(img);
-//   }
+class PasswordForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            passwordOld: '',
+            passwordNew: '',
+            passwordNew2: '',
+        }
+    
+        this.handleSubmit = this.handleSubmit.bind(this);
 
-//   function beforeUpload(file) {
-//     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-//     if (!isJpgOrPng) {
-//       message.error('You can only upload JPG/PNG file!');
-//     }
-//     const isLt2M = file.size / 1024 / 1024 < 2;
-//     if (!isLt2M) {
-//       message.error('Image must smaller than 2MB!');
-//     }
-//     return isJpgOrPng && isLt2M;
-//   }
+        this.userService = new UserService();
+    }
+
+
+    handleSubmit(event) {
+        event.preventDefault();
+
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                const passwordRequest = Object.assign({}, values);
+                if(passwordRequest.passwordNew == passwordRequest.passwordNew2){
+                    this.userService.postChangePassword(JSON.stringify(passwordRequest)).then(response => {
+                        notification.success({
+                            message: 'Сообщение',
+                            description: 'Пароль успешно изменен!'
+                        });
+                    }).catch(error => {
+                        notification.error({
+                            message: 'Ошибка',
+                            description: 'Извините произошла ошибка изменения пароля!!'
+                        });
+                    });    
+                }else{
+                    notification.error({
+                        message: 'Ошибка',
+                        description: 'Пароли не совпадают!!'
+                    });
+                }
+            }
+        });
+    }
+
+
+    componentDidMount() {}
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+
+        return (
+            <Form onSubmit={this.handleSubmit}>
+                <FormItem>
+                    {getFieldDecorator('passwordOld', {
+                        initialValue: this.state.passwordOld,
+                        rules: [{ required: true,  message: 'Введите старый пароль' }],
+                    })(
+                        <Input.Password placeholder="Старый пароль"/>
+                    )}
+                </FormItem>
+
+                <FormItem>
+                    {getFieldDecorator('passwordNew', {
+                        initialValue: this.state.passwordNew,
+                        rules: [{ required: true,  message: 'Введите новый пароль' }],
+                    })(
+                        <Input.Password placeholder="Новый пароль"/>
+                    )}
+                </FormItem>
+
+                <FormItem>
+                    {getFieldDecorator('passwordNew2', {
+                        initialValue: this.state.passwordNew2,
+                        rules: [{ required: true,  message: 'Введите новый пароль повторно' }],
+                    })(
+                        <Input.Password placeholder="Повторите пароль"/>
+                    )}
+                </FormItem>
+
+                <FormItem>
+                    <Button htmlType="submit">Изменить</Button>
+                </FormItem>
+            </Form>
+        );
+
+    }
+}
 
 
 export default Userdetails;

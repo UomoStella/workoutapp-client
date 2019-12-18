@@ -15,6 +15,16 @@ export class TrainingService {
     getSubtypeTrainingById(id){
         return service.getRestClient().get("/training/subtypetraining/all", { params: { typeid : id}});
     }
+
+    getMuscleGroupsALL(){
+        return service.getRestClient().get("/training/musclegroups/all");
+    }
+    
+    getTypeTrainingALL(){
+        return service.getRestClient().get("/training/typetraining/all");
+    }
+    
+
     getSubtypeTraining(){
         return service.getRestClient().get("/training/subtypetraining/all");
     }
@@ -24,7 +34,8 @@ export class TrainingService {
     }
 
     getExercisesListByPage(paginationpage){
-        return service.getRestClient().get("/training/exercises/list", { params: { paginationpage : paginationpage}});
+        return service.getRestClient().get("/training/exercises/list", { params: { paginationpage : paginationpage,
+        size: 12}});
     }
 
     postExercisesDelete(data){

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Select, Form, Input,  Typography , message, notification , Switch } from 'antd';
-import {DailyWorkoutService} from '../../../service/DailyWorkoutService'
+import {DailyWorkoutService} from '../../../service/DailyWorkoutService';
+import {RecipeService} from '../../../service/RecipeService';
 import { ACCESS_TOKEN } from '../../../constants';
 //ERRORS
 import ServerError  from '../../../error/ServerError';
@@ -16,8 +17,7 @@ class DailyWorkoutEdit extends Component {
     constructor(props) {
         super(props);
     }
-
-
+    
     render() {
         const trainingProgramId = this.props.match.params.trainingProgramId; 
         const id = this.props.match.params.id; 
@@ -42,7 +42,9 @@ class DailyWorkoutEditForm extends Component {
             day: '',
             trainingProgramId: '',
             trainingProgramName: '',
+            rationDayId: '',
 
+            rationDayList: [],
 
             isLoading: true,
             serverError: false,
@@ -51,8 +53,11 @@ class DailyWorkoutEditForm extends Component {
 
     
         this.getDailyWorkout = this.getDailyWorkout.bind(this);
+        this.getRationDayList = this.getRationDayList.bind(this);
+
         this.handleSubmit = this.handleSubmit.bind(this);
 
+        this.recipeService = new RecipeService();
 
         this.dailyWorkoutService = new DailyWorkoutService();
     }
@@ -70,7 +75,7 @@ class DailyWorkoutEditForm extends Component {
                     description: dailyWorkout.description,
                     day: this.state.day,
                     trainingProgramId: this.state.trainingProgramId,
-  
+                    rationDayId: dailyWorkout.rationDayId
                 };
             
                 this.dailyWorkoutService.postDailyWorkout(JSON.stringify(dailyWorkoutRequest))
@@ -103,6 +108,7 @@ class DailyWorkoutEditForm extends Component {
                 day: dailyWorkout.day,
                 trainingProgramId: dailyWorkout.trainingProgramId,
                 trainingProgramName: dailyWorkout.trainingProgramName,
+                rationDayId: dailyWorkout.rationDayId != null ? dailyWorkout.rationDayId.toString() : '',
 
                 isLoading : false
             });    
@@ -128,6 +134,16 @@ class DailyWorkoutEditForm extends Component {
         });    
     }
 
+    getRationDayList(id, trainingProgramId, day){
+        this.recipeService.getRationDayListByUser()
+        .then(response => {
+            this.setState({
+                rationDayList: response.data.containerList
+            });    
+        }).catch(error => {});    
+    }
+    
+
     componentDidMount() {
         if(!localStorage.getItem(ACCESS_TOKEN)) {
             this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
@@ -139,6 +155,7 @@ class DailyWorkoutEditForm extends Component {
 
 
         this.getDailyWorkout(id, trainingProgramId, day);
+        this.getRationDayList();
     }
 
 
@@ -146,11 +163,9 @@ class DailyWorkoutEditForm extends Component {
         if(this.state.isLoading) {
             return <LoadingIndicator/>
         }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
@@ -173,6 +188,27 @@ class DailyWorkoutEditForm extends Component {
                         )}
                     </FormItem>
 
+                    {!this.state.rationDayList.length == 0 ? 
+                        <FormItem label="Рацион">
+                            {getFieldDecorator('rationDayId', {
+                                initialValue: this.state.rationDayId
+                            })(
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    placeholder="Выберите дневной рацион"
+                                    optionFilterProp="children"
+                                >
+                                    {this.state.rationDayList.map(rationDay => (
+                                        <Option key={rationDay.id}>{rationDay.name}</Option>
+                                        ))} 
+                                </Select>
+                            )}
+                        </FormItem>
+                        : 
+                        null
+                    }
+
                     <FormItem label="Описание">
                         {getFieldDecorator('description', {
                             initialValue: this.state.description
@@ -183,6 +219,7 @@ class DailyWorkoutEditForm extends Component {
                             placeholder="Описание"/>
                         )}
                     </FormItem>
+
 
                     <FormItem>
                         <Button icon="save" type="primary" htmlType="submit" size="large">Сохранить</Button>

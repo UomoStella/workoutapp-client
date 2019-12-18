@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { TrainingService } from '../../../service/TrainingService';
 import { FileService } from '../../../service/FileService';
 import {withRouter, Link } from 'react-router-dom';
-import { notification, Button, Row, Col, Tabs, Icon, Upload, Input} from 'antd';
+import { notification, Button, Row, Col, Tabs, Icon, Upload, Input, Breadcrumb } from 'antd';
 import './ExercisesMedia.css';
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
 import { ACCESS_TOKEN, API_BASE_URL } from '../../../constants';
-import ExcersicesLogo from '../../../resources/excersices.png';
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 import VideoPlayer from '../../player/VideoPlayer';
 
 const { TabPane } = Tabs;
@@ -262,14 +262,9 @@ class ExercisesMedia extends Component {
 
 
     render() {
-        if(this.state.isLoading) {
-            return <LoadingIndicator/>
-        }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
@@ -292,128 +287,127 @@ class ExercisesMedia extends Component {
 
         const linkButton = "/exercises/edit/" + this.state.id;
 
-
         const linkVideoFile = API_BASE_URL + "/fields/video/" + this.state.videoFileLink;
         const linkVideo = this.state.linkVideo;
         const imageAccept=".jpg,.jpeg,.png";
         const videoAccept=".mp4";
 
         return (
-            <div className="col-exercises_media">
-                
-                <Row  style={{overflow: 'auto'}}>
-                    <Col md={20} style={{overflow: 'hidden'}}>
-                        <p className="text-main-exercises_media">Упражнение: <span>{this.state.name}</span></p>
-                        <p className="text-exercises_media">Описание: <span>{this.state.description}</span></p>
-                        <p className="text-exercises_media">Подтип тренировки: <span>{this.state.subtypeTrainingName}</span></p>
-                        {!this.state.muscleGroupsNameSet.length == 0 ? 
-                            <div className="list-muscle_groups-exercises_media">
-                                <span>Воздействие на группу мышц:</span>
-                                <ul>
-                                    {this.state.muscleGroupsNameSet.map(muscleGroup => (<li> {muscleGroup} </li>))}
-                                </ul>
-                            </div>
-                            : null
-                        }
-                        
-                    </Col>
-                    <Col md={4}>
-                        {this.state.id != null ?
-                            <div>
-                                <div className="col-btn-right">
-                                <Link to={linkButton}><Button type="primary" icon="edit">Редактировать</Button> </Link>
-                                </div>
-                                {/* <div style={textAlignEnd}>
-                                    <Button><Link to={'/exercises/all'}>Список упражнений</Link></Button> 
-                                </div> */}
-                            </div>
-                        : null
-                        }
-                    </Col>
-                </Row>
-
-                <Row gutter={[0, 40]}>
-                    <Col span={24}>
-                        <Tabs defaultActiveKey="1">
-                            <TabPane tab={<span><Icon type="file-image"/>Загрузить изображение</span>} key="1">
-                                <Row className="col-imageupload-exercises_media">
-                                    <Col md={18}>
-                                    {!this.state.imageBase64.length == 0 ?
-                                        <img src={imageBase64} alt="Red dot" />
-                                        :
-                                        <img src={ExcersicesLogo} alt="Red dot" />
-                                    }
-                                    </Col>
-                                    <Col md={6}>
-                                        <div className="col-btn-right">
-                                            <Upload accept={imageAccept} showUploadList={false} {...propsUploadImage}>
-                                                <Button className="btn-upload" type="primary"><Icon type="upload" /> Загрузить файл</Button>
-                                            </Upload>
-                                            <br/>
-                                            <Button className="btn-delete" icon="delete" onClick={this.handleDeleteImageFile}>Удалить файл</Button>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            
-                                {/* <input type="file" name="image" accept={imageAccept}
-                                    onChange={this.handleUploadImageFile}/> */}
-                                
-                            </TabPane>
-                        
-                            <TabPane tab={<span><Icon type="video-camera" /> Загрузить видео </span>} key="2">
-                                <Row className="col-videofile-exercises_media">
-                                    <Col md={18}>
-                                        {this.state.isLoadingFile ?
-                                            <LoadingIndicator/>
-                                            :
-                                            <div>
-                                                {this.state.hasVideoFile ?
-                                                <VideoPlayer
-                                                    url={linkVideoFile} 
-                                                    playing={false} />
-                                                :
-                                                <p className="noFile">Видео не загружено</p>}
-                                            </div>
-                                        }
-                                    </Col>
-                                    <Col md={6}>
-                                        <div  className="col-btn-right">
-                                            <Upload accept={videoAccept} showUploadList={false} {...propsUploadVideoFile}>
-                                                <Button className="btn-upload" type="primary"><Icon type="upload" /> Загрузить файл</Button>
-                                            </Upload>
-                                            <br/>
-                                            <Button className="btn-delete" icon="delete" onClick={this.handleDeleteVideoFile}>Удалить файл</Button>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <div>
-                                    
-                                    
-                                </div>
-                            </TabPane>
-                            
-                            <TabPane tab={<span><Icon type="youtube" /> Ссылка на видео</span>} key="3" >
-                                <div className="link-input-field">
-                                    <Input value={this.state.linkVideoInput} onChange={this.handleChangeLinkVideo}/>
-                                    <Button icon="link" onClick={this.handleSaveVideoFile}>Сохранить ссылку</Button>
-                                </div>
-                                
-                                {this.state.isLoadingLinkVideo ?
-                                    <LoadingIndicator/>
-                                    :
-                                    <div>
-                                        {this.state.linkVideo != null && this.state.linkVideo.length != 0 ?
-                                        <VideoPlayer url={linkVideo} playing={false} />
-                                            :
-                                        null
-                                        }
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/exercises/all'}>Список упражнений</Link></Breadcrumb.Item>
+                        {this.state.id ?
+                            <Breadcrumb.Item><Link to={'/exercises/media/'+this.state.id}>Упражнение</Link></Breadcrumb.Item>
+                        : null}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    {this.state.isLoading ?
+                        <LoadingIndicator/>
+                    :
+                    <div className="col-exercises_media">        
+                        <Row  style={{overflow: 'auto'}}>
+                            <Col md={20} style={{overflow: 'hidden'}}>
+                                <p className="text-main-exercises_media">Упражнение: <span>{this.state.name}</span></p>
+                                <p className="text-exercises_media">Описание: <span className="whiteSpace">{this.state.description}</span></p>
+                                <p className="text-exercises_media">Подтип тренировки: <span>{this.state.subtypeTrainingName}</span></p>
+                                {!this.state.muscleGroupsNameSet.length == 0 ? 
+                                    <div className="list-muscle_groups-exercises_media">
+                                        <span>Воздействие на группу мышц:</span>
+                                        <ul>
+                                            {this.state.muscleGroupsNameSet.map(muscleGroup => (<li> {muscleGroup} </li>))}
+                                        </ul>
                                     </div>
-                                }
-                            
-                            </TabPane>
-                        </Tabs>
-                    </Col>
-                </Row>
+                                : null}
+                                
+                            </Col>
+                            <Col md={4}>
+                                {this.state.id != null ?
+                                    <div>
+                                        <div className="col-btn-right">
+                                        <Link to={linkButton}><Button type="primary" icon="edit">Редактировать</Button> </Link>
+                                        </div>
+                                    </div>
+                                : null}
+                            </Col>
+                        </Row>
+                        <Row gutter={[0, 40]}>
+                            <Col span={24}>
+                                <Tabs defaultActiveKey="1">
+                                    <TabPane tab={<span><Icon type="file-image"/>Загрузить изображение</span>} key="1">
+                                        <Row className="col-imageupload-exercises_media">
+                                            <Col md={18}>
+                                            {!this.state.imageBase64.length == 0 ?
+                                                <img src={imageBase64} alt="Red dot" />
+                                                :
+                                                <img src={ExcersicesLogo} alt="Red dot" />
+                                            }
+                                            </Col>
+                                            <Col md={6}>
+                                                <div className="col-btn-right">
+                                                    <Upload accept={imageAccept} showUploadList={false} {...propsUploadImage}>
+                                                        <Button className="btn-upload" type="primary"><Icon type="upload" /> Загрузить файл</Button>
+                                                    </Upload>
+                                                    <br/>
+                                                    <Button className="btn-delete" icon="delete" onClick={this.handleDeleteImageFile}>Удалить файл</Button>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </TabPane>
+                                
+                                    <TabPane tab={<span><Icon type="video-camera" /> Загрузить видео </span>} key="2">
+                                        <Row className="col-videofile-exercises_media">
+                                            <Col md={18}>
+                                                {this.state.isLoadingFile ?
+                                                    <LoadingIndicator/>
+                                                    :
+                                                    <div>
+                                                        {this.state.hasVideoFile ?
+                                                        <VideoPlayer
+                                                            url={linkVideoFile} 
+                                                            playing={false} />
+                                                        :
+                                                        <p className="noFile">Видео не загружено</p>}
+                                                    </div>
+                                                }
+                                            </Col>
+                                            <Col md={6}>
+                                                <div  className="col-btn-right">
+                                                    <Upload accept={videoAccept} showUploadList={false} {...propsUploadVideoFile}>
+                                                        <Button className="btn-upload" type="primary"><Icon type="upload" /> Загрузить файл</Button>
+                                                    </Upload>
+                                                    <br/>
+                                                    <Button className="btn-delete" icon="delete" onClick={this.handleDeleteVideoFile}>Удалить файл</Button>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </TabPane>
+                                    
+                                    <TabPane tab={<span><Icon type="youtube" /> Ссылка на видео</span>} key="3" >
+                                        <div className="link-input-field">
+                                            <Input value={this.state.linkVideoInput} onChange={this.handleChangeLinkVideo}/>
+                                            <Button icon="link" onClick={this.handleSaveVideoFile}>Сохранить ссылку</Button>
+                                        </div>
+                                        
+                                        {this.state.isLoadingLinkVideo ?
+                                            <LoadingIndicator/>
+                                        :
+                                            <div>
+                                                {this.state.linkVideo != null && this.state.linkVideo.length != 0 ?
+                                                <VideoPlayer url={linkVideo} playing={false} />
+                                                    :
+                                                null
+                                                }
+                                            </div>
+                                        }          
+                                    </TabPane>
+                                </Tabs>
+                            </Col>
+                        </Row>
+                    </div>
+                    }
+                </div>
             </div>
         );
     }

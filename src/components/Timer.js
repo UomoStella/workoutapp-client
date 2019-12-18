@@ -38,7 +38,7 @@ class Timer extends Component {
     render() {
       return(
         <div>
-          <TimerDisplay timeMax={this.state.timeMax} timeLeft = {this.state.timeLeft}/>
+          <TimerDisplay onClose={this.props.onClose} timeMax={this.state.timeMax} timeLeft = {this.state.timeLeft}/>
           <audio id = "end" preload="auto" src={Guitar}></audio>
         </div>
       )
@@ -59,9 +59,11 @@ class Timer extends Component {
     render() {
       if (this.props.timeLeft === 0) {
         document.getElementById("end").play()
+
       }
       if (this.props.timeLeft === 0 || this.props.timeLeft === null) {
-        return <div></div>
+        return <Progress type="circle" successPercent={0} seconds={this.props.timeLeft} 
+        percent={0} format={() => `Время вышло`} />
       }
       
       const percent = 100 * this.props.timeLeft / this.props.timeMax;

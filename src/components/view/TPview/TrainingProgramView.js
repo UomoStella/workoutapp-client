@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { Row, Col, notification, Pagination} from 'antd';
-// import './ExercisesList.css';
+import { Row, Col, notification, Pagination, Button, Drawer, Breadcrumb, Alert } from 'antd';
+import {withRouter, Link } from 'react-router-dom';
+
 import { TrainingProgramService } from '../../../service/TrainingProgramService';
 import TPViewElement from './TPViewElement';
+import TPVFilter from './TPVFilter';
 import List from '../../templats/List';
 import LoadingIndicator from '../../LoadingIndicator';
 import ServerError  from '../../../error/ServerError';
 import NotFound from '../../../error/NotFound';
+import AlertTable from '../../../error/AlertTable';
+
 
 class TrainingProgramView extends Component {
     constructor(props) {
@@ -19,6 +23,10 @@ class TrainingProgramView extends Component {
             totalPages: '',
             last: '',
 
+            typeTrainingId: null,
+            subtypeTrainingId: null,
+            mgId: null,
+
             isLoading: true,
             serverError: false,
             notFound: false,
@@ -26,9 +34,21 @@ class TrainingProgramView extends Component {
 
         this.trainingProgramService = new TrainingProgramService();
 
-        
         this.getContentVIEW = this.getContentVIEW.bind(this);
         this.paginationChange = this.paginationChange.bind(this);
+        this.setFilter = this.setFilter.bind(this);
+        this.showDrawer = this.showDrawer.bind(this);
+        
+    }
+
+    setFilter = (typeTrainingId, subtypeTrainingId, mgId) => {
+        this.setState({
+            typeTrainingId: typeTrainingId,
+            subtypeTrainingId: subtypeTrainingId,
+            mgId: mgId,
+        })
+        this.getContentVIEW(0, typeTrainingId, subtypeTrainingId, mgId);
+        this.onClose();
     }
 
     paginationChange = (page, pageSize) => {
@@ -36,13 +56,12 @@ class TrainingProgramView extends Component {
         this.getContentVIEW(pageInx);
     }
 
-    getContentVIEW(pageNum){
+    getContentVIEW(pageNum, typeTrainingId, subtypeTrainingId, mgId){
         this.setState({
             isLoading: true,
         });
 
-        this.trainingProgramService.getTrainingProgramVIEW(pageNum)
-        .then(response => {
+        this.trainingProgramService.getTrainingProgramVIEW(typeTrainingId, subtypeTrainingId, mgId, pageNum).then(response => {
             this.setState({
                 trainingProgramList: response.data.content,
                 page: pageNum,
@@ -74,10 +93,21 @@ class TrainingProgramView extends Component {
         });
     }
 
+    showDrawer = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+    
+    onClose = () => {
+        this.setState({
+            visible: false,
+        });
+    };
+
     componentDidMount() {
         this.getContentVIEW();
     }
-
 
     render() {   
         if(this.state.isLoading) {
@@ -96,7 +126,7 @@ class TrainingProgramView extends Component {
         const valueList = [];
         this.state.trainingProgramList.forEach((value) => { 
             valueList.push(
-                <Col md={8} gutter={[16, 16]} >
+                <Col md={6} style={{minWidth: 300}} gutter={[16, 16]} >
                     <TPViewElement id={value.id}
                         name={value.name}
                         base64Image={value.base64Image}
@@ -108,34 +138,48 @@ class TrainingProgramView extends Component {
         });
         
         return (
-            <Row  gutter={[16, 16]}>
-                {/* <Col span={24}>
-                    <div style={{textAlign: 'right'}}>
-                        <Button type="primary"><Link to={'/trainingprogram/edit'}>Добавить программу</Link></Button> 
-                    </div>
-                </Col> */}
-        
-                <Col span={24}>
-                    {!this.state.isLoading ?
-                    <div>
-                        {this.state.trainingProgramList.length != 0 ?
-                        <Row gutter={16} className="tpview-list">
-                            <List  Content={valueList} />
-                        </Row>
-                        :
-                        <p>Нет данных!!</p>
-                        }
-                    </div>
-                    :
-                    <LoadingIndicator/>
-                }
-                </Col>
-
-                <Col span={24}>
-                    <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
-                </Col>
-            </Row>
-    );
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/trainingprogram/viewall'}>Список программ тренировок</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <Row gutter={[16, 16]} className="borderBottomDotted">
+                        <Col md={20}>
+                            <p className="title-page">Список программ тренировок</p>
+                        </Col>
+                        <Col nd={4}>
+                            <div className="textRight">
+                                <Button icon="menu-unfold" onClick={this.showDrawer}>Фильтр</Button> 
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row  gutter={[8, 2]}>
+                        <Col span={24}>
+                            {!this.state.isLoading ?
+                                <div>
+                                    {this.state.trainingProgramList.length != 0 ?
+                                        <Row gutter={16} className="tpview-list">
+                                            <List  Content={valueList} />
+                                            <Col span={24}>
+                                                <div className="ant-pagination-div">
+                                                    <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    : <AlertTable />}
+                                </div>
+                            : <LoadingIndicator/>}
+                        </Col>
+                        
+                        <Drawer title="Фильтр" placement="left" onClose={this.onClose} visible={this.state.visible}>
+                            <TPVFilter setFilter={this.setFilter}/>
+                        </Drawer>
+                    </Row>
+                </div>
+            </div>
+        );
     }
 }
 

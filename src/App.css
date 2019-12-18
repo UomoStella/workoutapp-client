@@ -16,11 +16,13 @@
 .text-exercises_media span{
   font-weight: 400;
   font-style: italic;
+  white-space: pre-wrap;
 }
 
 .text-exercises_media{
   font-weight: bold;
 }
+
 
 .list-muscle_groups-exercises_media span{
   font-weight: bold;
@@ -83,4 +85,36 @@ outline: 1px solid slategrey;
 .btn-row-div{
   padding-bottom: 15px;
   border-bottom: 1px dotted #e0ccff;
+}
+.whiteSpace {
+  white-space: pre-wrap;
+}
+
+
+.content-div {
+  background: #fff; 
+  padding: 24px;
+  min-height: 1000px;
+  overflow: auto;
+}
+
+.breadcrumb-div{
+  margin-bottom: 10px;
+}
+.marginTop10{
+  margin-top: 10px;
+}
+.borderBottomDotted{
+  border-bottom: 1px dotted #e0ccff;
+}
+
+.title-page{
+  font-weight: bold;
+  font-size: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+
+.ant-pagination-div{
+  margin-top: 15px;
 }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, notification, Tabs, Button, Drawer, Icon} from 'antd';
+import {withRouter, Link } from 'react-router-dom';
+
+import { Row, Col, notification, Tabs, Button, Drawer, Icon, Breadcrumb} from 'antd';
 import { PerformanceService } from '../../../service/PerformanceService';
 import { ACCESS_TOKEN } from '../../../constants';
 import TrainingDescriptionElement from '../../../components/core/trainingprogram/TrainingDescriptionElement';
@@ -26,11 +28,13 @@ class DWUPerformance extends Component {
             tpDurationDays: '',
             tpId: '',
             tpName: '',
-            isDone: '',
+            isDone: true,
             prevId:'',
             activeKey: "0",
             timerTimeLeft: null,
             tdList: [],
+            tpIsDone: false,
+            viewid: null,
 
             isLoading: true,
             serverError: false,
@@ -44,6 +48,8 @@ class DWUPerformance extends Component {
         this.dwuDone = this.dwuDone.bind(this);
         this.dwuDoneAndSave = this.dwuDoneAndSave.bind(this);
         this.goPrev = this.goPrev.bind(this);
+        this.onClose = this.onClose.bind(this);
+        
     
         this.showDrawer = this.showDrawer.bind(this);
     
@@ -52,7 +58,7 @@ class DWUPerformance extends Component {
     goPrev = () => {
         if(this.state.prevId)
             this.getContentVIEW(this.state.prevId); 
-            this.props.handleMessage('/performance/dwu/'+this.state.prevId, '');
+            this.props.handleMessage('/performance/dwu/'+this.state.prevId + (this.state.viewid ? '/'+this.state.viewid : ''), '');
       };
 
 
@@ -66,6 +72,7 @@ class DWUPerformance extends Component {
       onClose = () => {
         this.setState({
           visible: false,
+          timerTimeLeft : null
         });
       };
 
@@ -107,9 +114,11 @@ class DWUPerformance extends Component {
 
     
 
-    getContentVIEW(dwuID){
+    getContentVIEW(dwuID, viewid){
+        viewid = viewid != null ? viewid : this.state.viewid;
         this.setState({
             isLoading: true,
+            viewid: viewid
         });
 
         this.performanceService.getAllDWUbyID(dwuID)
@@ -125,6 +134,7 @@ class DWUPerformance extends Component {
                 tpName: response.data.tpName,
                 isDone: response.data.isDone,
                 prevId: response.data.prevId,
+                tpIsDone: response.data.tpIsDone,
             
                 tdList: response.data.tdList,
 
@@ -156,8 +166,9 @@ class DWUPerformance extends Component {
             this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
         }
 
+        const viewid = this.props.match.params.viewid; 
         const dwuID = this.props.match.params.dwuid; 
-        this.getContentVIEW(dwuID);
+        this.getContentVIEW(dwuID,viewid);
     }
 
     changeTab = (activeKey) => {
@@ -189,83 +200,111 @@ class DWUPerformance extends Component {
                         <ButtonNext visibleTab={false} chandeActiveKey={this.chandeActiveKey}/>}
                     </div>
                     {value.leadTime != null && value.leadTime > 0 ?
-                        <Button type="primary" onClick={this.showDrawer.bind(this, value.leadTime)}>Запустить таймер</Button>
+                        <div style={{paddingTop: '5px'}} className="textRight">
+                            <Button onClick={this.showDrawer.bind(this, value.leadTime)}>Запустить таймер</Button>
+                        </div>
                     : null}
                     <TrainingDescriptionElement trainingDescriptions={value} />
                 </TabPane>
             );
         });
         
+        const breadcrumbList = [];
+        if(this.state.viewid == 1){
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/performance/tp'}>Дневное задание</Link></Breadcrumb.Item>)
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/performance/dwu/'+this.state.id+'/1'}>Тренировка</Link></Breadcrumb.Item>)
+        }else if(this.state.viewid == 2) {
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/users/'}>Профиль</Link></Breadcrumb.Item>)
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/performance/dwu/'+this.state.id+'/2'}>Тренировка</Link></Breadcrumb.Item>)
+        }
+
         return (
-        <div>
-            <Row  gutter={[16, 16]}>
-                <Col span={24}>
-                    {!this.state.isLoading ?
-                    <div>
-                        {this.state.tdList.length != 0 ?
-                        <div>
-                            {this.state.prevId ? 
-                                <div className="btn-row-div">
+            <div>
+                {this.state.viewid ?
+                    <div className="breadcrumb-div">
+                        <Breadcrumb>
+                            {breadcrumbList}
+                        </Breadcrumb>
+                    </div>
+                : null}
+                <div className="content-div">
+                    <Row className="btn-row-div">
+                            <Col span={12}>
+                                {this.state.prevId ? 
+                                <div>
                                     <Button onClick={this.goPrev}><Icon type="left" />Предыдущая тренировка</Button>
                                 </div>
                                 : null}
-                            <Tabs activeKey={this.state.activeKey} tabPosition="left" onChange={this.changeTab}>
-                                {valueList}
-                                {this.state.isDone ?
-                                null 
-                                :
-                                <TabPane tab="Закончить тренировку" key={this.state.tdList.length}>
-                                    <Row gutter={[0],[10]}>
-                                        {this.state.dwDay >= this.state.tpDurationDays ?
-                                        <div>
-                                            <Col md={12}>
-                                                <img src={ARNIEND} style={{height: '400px', width: '100%'}}/>
-                                            </Col>
-                                            <Col md={12}>
-                                                <h2>Последняя тренировка! </h2>
-                                                <p>Внимание это последняя тренировка, если вы ходите проёти эту программу снова - нажмите на кнопку "Закончить и продолжить", если не хотите больше заниматься по ней нажмите "Закончить программу". И помни тяжелый труд вознаграждается.</p>
-                                                <Button type="primary" style={{marginRight: '5px'}} onClick={this.dwuDoneAndSave}>ЗАКОНЧИТЬ И ПРОДОЛЖИТЬ</Button>
-                                                <Button type="danger" onClick={this.dwuDone}>ЗАКОНЧИТЬ ТРЕНИРОВКУ</Button>
-                                            </Col>
-                                        </div>
+                            </Col>
+                            {this.state.tpIsDone ?
+                            <Col span={12}>
+                                <div style={{textAlign: 'right'}}>
+                                    <Button type="primary" onClick={this.dwuDoneAndSave}>Добавить программу</Button>                    
+                                </div>
+                            </Col>
+                            : null}
+                    </Row>
+                    <Row  gutter={[16, 16]}>
+                        <Col span={24}>
+                            {!this.state.isLoading ?
+                            <div>
+                                {this.state.tdList.length != 0 ?
+                                <div>
+                                    <Tabs activeKey={this.state.activeKey} tabPosition="left" onChange={this.changeTab}>
+                                        {valueList}
+                                        {this.state.isDone ?
+                                        null 
                                         :
-                                        <div>
-                                            <Col md={12}>
-                                                <img src={Arni} style={{height: '400px', width: '100%'}}/>
-                                            </Col>
-                                            <Col md={12}>
-                                                <h2>Треноровка закончена! </h2>
-                                                <p>Помни, что каждая тренировка приближает тебя к цели, не пропускай её ведь это будет означать поражение.</p>
-                                                <Button type="danger" onClick={this.dwuDone}>ЗАКОНЧИТЬ ТРЕНИРОВКУ</Button>
-                                            </Col>
-                                        </div>
+                                        <TabPane tab="Закончить тренировку" key={this.state.tdList.length}>
+                                            <Row gutter={[0],[10]}>
+                                                {this.state.dwDay >= this.state.tpDurationDays ?
+                                                <div>
+                                                    <Col md={12}>
+                                                        <img src={ARNIEND} style={{height: '400px', width: '100%'}}/>
+                                                    </Col>
+                                                    <Col md={12}>
+                                                        <h2>Последняя тренировка! </h2>
+                                                        <p>Внимание это последняя тренировка, если вы ходите проёти эту программу снова - нажмите на кнопку "Закончить и продолжить", если не хотите больше заниматься по ней нажмите "Закончить программу". И помни тяжелый труд вознаграждается.</p>
+                                                        <Button type="primary" style={{marginRight: '5px'}} onClick={this.dwuDoneAndSave}>ЗАКОНЧИТЬ И ПРОДОЛЖИТЬ</Button>
+                                                        <Button type="danger" onClick={this.dwuDone}>ЗАКОНЧИТЬ ТРЕНИРОВКУ</Button>
+                                                    </Col>
+                                                </div>
+                                                :
+                                                <div>
+                                                    <Col md={12}>
+                                                        <img src={Arni} style={{height: '400px', width: '100%'}}/>
+                                                    </Col>
+                                                    <Col md={12}>
+                                                        <h2>Треноровка закончена! </h2>
+                                                        <p>Помни, что каждая тренировка приближает тебя к цели, не пропускай её ведь это будет означать поражение.</p>
+                                                        <Button type="danger" onClick={this.dwuDone}>ЗАКОНЧИТЬ ТРЕНИРОВКУ</Button>
+                                                    </Col>
+                                                </div>
+                                                }
+                                            </Row>
+                                        </TabPane>
                                         }
-                                    </Row>
-                                </TabPane>
+                                    </Tabs>
+                                </div>
+                                :
+                                <p>Нет данных!!</p>
                                 }
-                            </Tabs>
-                        </div>
-                        :
-                        <p>Нет данных!!</p>
+                            </div>
+                            :
+                            <LoadingIndicator/>
                         }
-                    </div>
-                    :
-                    <LoadingIndicator/>
-                }
-                </Col>
-            </Row>
-            <Drawer
-                title="Таймер"
-                placement="right"
-                onClose={this.onClose}
-                visible={this.state.visible}
-                >
-                {this.state.timerTimeLeft ?
-                <Timer timeLeft={this.state.timerTimeLeft}/>
-                : null}
-            </Drawer>
-        </div>
-    );
+                        </Col>
+                    </Row>
+                    <Drawer title="Таймер" placement="right" onClose={this.onClose} visible={this.state.visible}>
+                        <div style={{textAlign: 'center'}}>
+                            {this.state.timerTimeLeft ?
+                                <Timer onClose={this.onClose} timeLeft={this.state.timerTimeLeft}/>
+                            : null}
+                        </div>
+                    </Drawer>
+                </div>
+            </div>
+        );
     }
 }
 

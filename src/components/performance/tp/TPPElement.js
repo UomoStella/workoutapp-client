@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
 import { Button, Row, Col, Icon } from 'antd';
-import ExcersicesLogo from '../../../resources/excersices.png';
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 import './TPPElement.css';
 
 class TPPElement extends Component {
@@ -17,6 +17,7 @@ class TPPElement extends Component {
             dwName: '',
             dwDescription: '',
             dwDay: '',
+            isEdit: true,
             
             isLoading: false
         }
@@ -25,6 +26,10 @@ class TPPElement extends Component {
     }
 
     mapElement(){
+        let isEdit = true;
+        if(this.props.isEdit)
+            isEdit = this.props.isEdit;
+
         this.setState({
             id: this.props.id, 
             dwuId: this.props.dwuId, 
@@ -35,6 +40,11 @@ class TPPElement extends Component {
             dwName: this.props.dwResponse.name,
             dwDescription: this.props.dwResponse.description,
             dwDay: this.props.dwResponse.day,
+            isEdit: isEdit,
+            isDone: this.props.isDone,
+            dateUpdate: this.props.dateUpdate,
+            viewid: this.props.viewid,
+
 
             isLoading: false
         });
@@ -66,24 +76,43 @@ class TPPElement extends Component {
                                 <span>{this.state.tpName}</span>
                             </div>
                             <div class="block">  
+                                {this.state.isDone ?
                                 <Row>
-                                    <Col span={20}>
-                                        <h2>{this.state.dwName}</h2>
+                                    <Col span={18}>
+                                        <h3>Последнее обновление: {this.state.dateUpdate} </h3>
                                     </Col>
-                                    <Col span={4}>
+                                    <Col span={6}>
+                                        {this.state.dwId != null ?
                                         <div style={textAlignEnd}>
-                                            {this.state.dwuId != null ?
-                                            <Link to={'/performance/dwu/'+this.state.dwuId}><Button><Icon type="fire" /></Button></Link>
-                                            : null}
-                                            {this.state.dwId != null ?
-                                            <Link to={'/trainingprogram/view/'+this.state.dwId}><Button><Icon type="info" /></Button></Link>
-                                            : null}
-                                            
+                                            <Link to={'/performance/dwu/'+this.state.dwuId + (this.state.viewid != null ? '/'+this.state.viewid : '')}><Button><Icon type="info" /></Button></Link>
                                         </div>
+                                        : null}
                                     </Col>
-                                </Row>         
-                                <span className="dayName">{this.state.dwDay} день</span>
-                                <p className="clip">{this.state.dwDescription}</p>
+                                </Row>
+                                :
+                                <div>
+                                    <Row>
+                                        <Col span={16}>
+                                            <h2>{this.state.dwName}</h2>
+                                        </Col>
+                                        {this.state.isEdit ?
+                                        <Col span={8}>
+                                            <div style={textAlignEnd}>
+                                                {this.state.dwuId != null ?
+                                                <Link to={'/performance/dwu/'+this.state.dwuId + (this.state.viewid != null ? '/'+this.state.viewid : '')}><Button><Icon type="fire" /></Button></Link>
+                                                : null}
+                                                {this.state.dwId != null ?
+                                                <Link to={'/trainingprogram/view/'+this.state.dwId}><Button><Icon type="info" /></Button></Link>
+                                                : null}
+                                                
+                                            </div>
+                                        </Col>
+                                        : null}
+                                    </Row>         
+                                    <span className="dayName">{this.state.dwDay} день</span>
+                                    <p className="clip">{this.state.dwDescription}</p>
+                                </div>
+                                }
                             </div>
                         </div>
                     </Col>

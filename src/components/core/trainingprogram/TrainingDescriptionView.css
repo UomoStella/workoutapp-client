@@ -27,3 +27,9 @@
     border-bottom: 1px dashed #e0ccff;
     padding-bottom: 20px;
 }
+
+.borderLeftRight{
+    border-left: 1px dashed #e0ccff;
+    border-right: 1px dashed #e0ccff;
+    padding: 10px;
+}

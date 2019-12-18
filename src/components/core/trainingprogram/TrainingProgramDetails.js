@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
-import { notification, Button, Row, Col, Tabs, Icon, Upload, Input, List, Skeleton } from 'antd';
+import { notification, Button, Row, Col, Tabs, Icon, Upload, Breadcrumb, List } from 'antd';
 
 import { TrainingProgramService } from '../../../service/TrainingProgramService';
 import { DailyWorkoutService } from '../../../service/DailyWorkoutService';
 
-
-
 import { FileService } from '../../../service/FileService';
 
 import UserSelectModal from './UserSelectModal';
-import ExcersicesLogo from '../../../resources/excersices.png';
-
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
@@ -261,14 +258,9 @@ class TrainingProgramDetails extends Component {
 
     
     render() {   
-        if(this.state.isLoading) {
-            return <LoadingIndicator/>
-        }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
@@ -288,145 +280,129 @@ class TrainingProgramDetails extends Component {
         console.log(this.state.IsPrivate);
         return (
             <div>
-                    <Row  gutter={[16, 16]}>
-                        <Col md={18}>
-                            <h2>Программа тренировок</h2>
-                            <p>Программа тренировок: <span>{this.state.name}</span></p>
-                            <p>Описание: <span>{this.state.description}</span></p>
-                            <p>Количество дней: <span>{this.state.durationDays}</span></p>
-                        </Col>
-                        <Col md={6}>
-                            <div style={{textAlign: 'right'}}>
-                                <Link to={'/trainingprogram/edit/'+ this.state.id}><Button type="primary"><Icon type="edit" /> Редактировать</Button></Link>
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row gutter={[0, 40]}>
-                        <Col span={24}>
-                        <Tabs defaultActiveKey="2">
-                            <TabPane tab={<span><Icon type="file-image"/>Загрузить изображение</span>} key="1">
-                                <Row className="col-imageupload-exercises_media">
-                                    <Col md={18}>
-                                    {!this.state.base64Image.length == 0 ?
-                                        <img src={imageBase64} alt="Red dot" />
-                                        :
-                                        <img src={ExcersicesLogo} alt="Red dot" />
-                                    }
-                                    </Col>
-                                    <Col md={6}>
-                                        <div className="col-btn-right">
-                                            <Upload accept={imageAccept} showUploadList={false} {...propsUploadImage}>
-                                                <Button className="btn-upload" type="primary"><Icon type="upload" /> Загрузить файл</Button>
-                                            </Upload>
-                                            <br/>
-                                            <Button className="btn-delete" icon="delete" onClick={this.handleDeleteImageFile}>Удалить файл</Button>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            
-                                {/* <input type="file" name="image" accept={imageAccept}
-                                    onChange={this.handleUploadImageFile}/> */}
-                                
-                            </TabPane>
-                        
-                            <TabPane tab={<span><Icon type="schedule"/> Программа тренировок по дням </span>} key="2">
-                                <Row>
-                                    {this.state.dailyWorkoutResponseList.length != 0 ?
-                                        <List
-                                            itemLayout="horizontal"
-                                            dataSource={this.state.dailyWorkoutResponseList}
-                                            renderItem={item => (
-                                            <List.Item actions={[<Link to={item.id != null ?
-                                            '/workout/details/edit/'+ item.trainingProgramId+'/'+ item.day
-                                            : 
-                                            '/workout/edit/'+ item.trainingProgramId+'/'+ item.day}>Изменить</Link>, 
-                                            <span>{item.id != null ?
-                                                <a onClick={this.deleteDailyWorkout.bind(this, item.id)} key="list-loadmore-more">Очистить</a>
-                                                :
-                                                null}    
-                                            </span>]}>
-                                                <List.Item.Meta
-                                                title={<span>{item.day} день ({item.id == null ? 'Нет данных' : item.name})</span>}
-                                                description={<span>{item.description}</span>}
-                                                />
-                                            </List.Item>
-                                            )}
-                                        />
-                                        : 
-                                        <p>Не данных по дням.</p>
-                                    }
-                                </Row>                               
-                            </TabPane>
-
-                            <TabPane tab={<span><Icon type="user"/> Программу используют </span>} key="3">
-                                <Row>
-                                    {this.state.userDetails.length != 0 ?
-                                        <List
-                                            itemLayout="horizontal"
-                                            dataSource={this.state.userDetails}
-                                            renderItem={item => (
-                                            <List.Item actions={[<Link to={'/user/profile'}>Профиль</Link>, <a key="list-loadmore-more">Очистить</a>]}>
-                                                <List.Item.Meta
-                                                title={<span>{item.lastName} {item.firstName}  ({item.name})</span>}
-                                                description={<span>{item.gender}</span>}
-                                                />
-                                            </List.Item>
-                                            )}
-                                        />
-                                        : 
-                                        <p>Не данных по дням.</p>
-                                    }
-                                </Row>                               
-                            </TabPane>
-                            
-
-                            {this.state.IsPrivate ?
-                                <TabPane tab={<span><Icon type="eye"/> Приватность </span>} key="4">
-                                    <Tabs defaultActiveKey="1">
-                                        <TabPane tab={<span>Список пользователей</span>} key="1">
-                                            <Row>
-                                                {this.state.isPrivateLoading ?
-                                                    <LoadingIndicator/>
-                                                    :
-                                                    <div>
-                                                        {this.state.usersPrivate.length != 0 ?
-                                                            <List
-                                                                itemLayout="horizontal"
-                                                                dataSource={this.state.usersPrivate}
-                                                                renderItem={item => (
-                                                                <List.Item actions={[<a onClick={this.deleteUserPrivate.bind(this, item.username)} key="list-loadmore-more">Удалить</a>,]}>
-                                                                    <List.Item.Meta
-                                                                    title={<span>{item.lastName} {item.firstName}  ({item.name})</span>}
-                                                                    description={<span>{item.gender}</span>}
-                                                                    />
-                                                                </List.Item>
-                                                                )}
-                                                            />
-                                                            : 
-                                                            <p>Не данных по дням.</p>
-                                                        }
-                                                    </div>
-                                                }
-                                            
-                                            </Row>     
-                                        </TabPane>
-                                        <TabPane tab={<span>Добавить пользователя</span>} key="2">
-                                            <Row>
-                                                <UserSelectModal saveUser={this.saveUserPrivate} placeholder="Введите имя польователя" style={{ width: '100%' }} />
-                                            </Row>     
-                                        </TabPane>
-                                    </Tabs>                   
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/trainingprogram/all'}>Список программ</Link></Breadcrumb.Item>
+                        {this.state.id ?
+                        <Breadcrumb.Item><Link to={'/trainingprogram/details/'+this.state.id}>Программа тренировок</Link></Breadcrumb.Item>
+                        : null}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    {this.state.isLoading ?
+                        <LoadingIndicator/>
+                    :
+                    <div>
+                        <Row  gutter={[16, 16]}>
+                            <Col md={18}>
+                                <h2>Программа тренировок</h2>
+                                <p>Программа тренировок: <span>{this.state.name}</span></p>
+                                <p>Описание: <span className="whiteSpace">{this.state.description}</span></p>
+                                <p>Количество дней: <span>{this.state.durationDays}</span></p>
+                            </Col>
+                            <Col md={6}>
+                                <div className="textRight">
+                                    <Link to={'/trainingprogram/edit/'+ this.state.id}><Button type="primary"><Icon type="edit" /> Редактировать</Button></Link>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row gutter={[0, 40]}>
+                            <Col span={24}>
+                            <Tabs defaultActiveKey="2">
+                                <TabPane tab={<span><Icon type="file-image"/>Загрузить изображение</span>} key="1">
+                                    <Row className="col-imageupload-exercises_media">
+                                        <Col md={18}>
+                                            {!this.state.base64Image.length == 0 ?
+                                                <img src={imageBase64} alt="Red dot" />
+                                            :
+                                                <img src={ExcersicesLogo} alt="Red dot" />
+                                            }
+                                        </Col>
+                                        <Col md={6}>
+                                            <div className="col-btn-right">
+                                                <Upload accept={imageAccept} showUploadList={false} {...propsUploadImage}>
+                                                    <Button className="btn-upload" type="primary"><Icon type="upload" /> Загрузить файл</Button>
+                                                </Upload>
+                                                <br/>
+                                                <Button className="btn-delete" icon="delete" onClick={this.handleDeleteImageFile}>Удалить файл</Button>
+                                            </div>
+                                        </Col>
+                                    </Row>
                                 </TabPane>
-                                :
-                                null
-                            }
-                    
-                        </Tabs>
-                        </Col>
-                    </Row>
-                    
+                            
+                                <TabPane tab={<span><Icon type="schedule"/> Программа тренировок по дням </span>} key="2">
+                                    <Row>
+                                        {this.state.dailyWorkoutResponseList.length != 0 ?
+                                            <List itemLayout="horizontal" dataSource={this.state.dailyWorkoutResponseList}
+                                                renderItem={item => (<List.Item actions={
+                                                [<Link to={item.id != null ? '/workout/details/edit/'+ item.trainingProgramId+'/'+ item.day
+                                                    :  '/workout/edit/'+ item.trainingProgramId+'/'+ item.day}>Изменить</Link>, 
+                                                    <span>
+                                                        {item.id != null ? 
+                                                            <a onClick={this.deleteDailyWorkout.bind(this, item.id)} key="list-loadmore-more">Очистить</a>
+                                                        : null}
+                                                    </span>
+                                                ]}>
+                                                    <List.Item.Meta title={<span>{item.day} день ({item.id == null ? 'Нет данных' : item.name})</span>} description={<span>{item.description}</span>} />
+                                                </List.Item>)}/>
+                                            : 
+                                            <p>Не данных по дням.</p>
+                                        }
+                                    </Row>                               
+                                </TabPane>
+
+                                <TabPane tab={<span><Icon type="user"/> Программу используют </span>} key="3">
+                                    <Row>
+                                        {this.state.userDetails.length != 0 ?
+                                            <List itemLayout="horizontal" dataSource={this.state.userDetails}
+                                                renderItem={item => (
+                                                <List.Item actions={[<Link to={'/user/profile'}>Профиль</Link>, <a key="list-loadmore-more">Очистить</a>]}>
+                                                    <List.Item.Meta title={<span>{item.lastName} {item.firstName}  ({item.name})</span>} description={<span>{item.gender}</span>} />
+                                                </List.Item>)}/>
+                                            : 
+                                            <p>Не данных по дням.</p>
+                                        }
+                                    </Row>                               
+                                </TabPane>
+                                
+                                {this.state.IsPrivate ?
+                                    <TabPane tab={<span><Icon type="eye"/> Приватность </span>} key="4">
+                                        <Tabs defaultActiveKey="1">
+                                            <TabPane tab={<span>Список пользователей</span>} key="1">
+                                                <Row>
+                                                    {this.state.isPrivateLoading ?
+                                                        <LoadingIndicator/>
+                                                        :
+                                                        <div>
+                                                            {this.state.usersPrivate.length != 0 ?
+                                                                <List itemLayout="horizontal" dataSource={this.state.usersPrivate}
+                                                                    renderItem={item => (
+                                                                    <List.Item actions={[<a onClick={this.deleteUserPrivate.bind(this, item.username)} key="list-loadmore-more">Удалить</a>,]}>
+                                                                        <List.Item.Meta title={<span>{item.lastName} {item.firstName}  ({item.name})</span>} description={<span>{item.gender}</span>} />
+                                                                    </List.Item> )} />
+                                                                : 
+                                                                <p>Не данных по дням.</p>
+                                                            }
+                                                        </div>
+                                                    }
+                                                </Row>     
+                                            </TabPane>
+                                            <TabPane tab={<span>Добавить пользователя</span>} key="2">
+                                                <Row>
+                                                    <UserSelectModal saveUser={this.saveUserPrivate} placeholder="Введите имя польователя" style={{ width: '100%' }} />
+                                                </Row>     
+                                            </TabPane>
+                                        </Tabs>                   
+                                    </TabPane>
+                                    : null
+                                }
+                            </Tabs>
+                            </Col>
+                        </Row>    
+                    </div>
+                    }
+                </div>
             </div>
-        
         );
     }
 }

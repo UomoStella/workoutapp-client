@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { TrainingService } from '../../../service/TrainingService';
-import { notification, Pagination, Button, Row, Col, Tabs, Icon } from 'antd';
+import { notification, Pagination, Button, Row, Col, Breadcrumb } from 'antd';
 import {withRouter, Link } from 'react-router-dom';
 import './ExercisesAll.css';
+import { ACCESS_TOKEN } from '../../../constants';
+import ExercisesList from './ExercisesList';
+
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
-import { ACCESS_TOKEN } from '../../../constants';
-// import ExcersicesLogo from '../../../resources/excersices.png';
-import ExercisesList from './ExercisesList';
+import AlertTable from '../../../error/AlertTable';
+
+
 
 class ExercisesAll extends Component {
     constructor(props) {
@@ -37,8 +40,6 @@ class ExercisesAll extends Component {
             page: pageNum
         });
 
-        console.log(pageNum);
-        
         this.trainingService.getExercisesListByPage(pageNum).then(response => {
 
             const exercisesRespons  = response.data;
@@ -53,8 +54,6 @@ class ExercisesAll extends Component {
                 
                 isLoading: false,
             });   
-            
-            
         }).catch(error => {
             notification.error({
                 message: 'Ошибка',
@@ -84,8 +83,7 @@ class ExercisesAll extends Component {
         const data = new FormData();
             data.append('id', id);
 
-        this.trainingService.postExercisesDelete(data)
-        .then(response => {
+        this.trainingService.postExercisesDelete(data).then(response => {
             this.setState({
                 isLoading: false,
             });
@@ -105,9 +103,6 @@ class ExercisesAll extends Component {
         });
     }
 
-
-
-
     componentDidMount() {
         if(!localStorage.getItem(ACCESS_TOKEN)) {
             this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
@@ -124,52 +119,55 @@ class ExercisesAll extends Component {
 
     
     render() {   
-        if(this.state.isLoading) {
-            return <LoadingIndicator/>
-        }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
 
-
         const page = this.state.page + 1;
         const totalPages = 10 * this.state.totalPages;
-
-        console.log(totalPages);
         
         return (
-                <Row  gutter={[16, 16]}>
-                    <Col span={24}>
-                        <div style={{textAlign: 'right'}}>
-                            <Button type="primary"><Link to={'/exercises/edit'}>Добавить тренировку</Link></Button> 
+            <div>
+            <div className="breadcrumb-div">
+                <Breadcrumb>
+                    <Breadcrumb.Item><Link to={'/exercises/all'}>Список упражнений</Link></Breadcrumb.Item>
+                </Breadcrumb>
+            </div>
+            <div className="content-div">
+                <Row gutter={[16, 16]} className="borderBottomDotted">
+                    <Col md={20}>
+                        <p className="title-page">Список упражнений</p>
+                    </Col>
+                    <Col nd={4}>
+                        <div className="textRight">
+                        <Link to={'/exercises/edit'}><Button type="primary" icon="plus"> Добавить упражнение</Button></Link> 
                         </div>
                     </Col>
-            
+                </Row>
+                <Row gutter={[16, 16]}>
                     <Col span={24}>
                         {!this.state.isLoading ?
                         <div>
                             {this.state.content.length != 0 ?
-                            <Row gutter={16} className="exercises-list">
-                                <ExercisesList exercisesDelete={this.exercisesDelete} excersicesContent={this.state.content}/>
-                            </Row>
-                            :
-                            <p>Нет данных!!</p>
-                            }
+                                <Row gutter={16} className="exercises-list">
+                                    <ExercisesList exercisesDelete={this.exercisesDelete} excersicesContent={this.state.content}/>
+                                    <Col span={24}>
+                                        <div className="ant-pagination-div">
+                                            <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
+                                        </div>
+                                    </Col>
+                                </Row>
+                            : <AlertTable/> }
                         </div>
-                        :
-                        <LoadingIndicator/>
-                    }
+                        : <LoadingIndicator/> }
                     </Col>
-
-                    <Col span={24}>
-                        <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
-                    </Col>
+                    
                 </Row>
+            </div>
+            </div>
         );
     }
 }

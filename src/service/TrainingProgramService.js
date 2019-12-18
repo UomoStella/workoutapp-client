@@ -7,10 +7,20 @@ export class TrainingProgramService {
         return service.getRestClient().get(api_url+"/all", { params: { paginationpage : pageNum}});
     }
     
-    getTrainingProgramVIEW(pageNum){
-        return service.getRestClient().get(api_url+"/view", { params: { paginationpage : pageNum, 
-            size: 18}});
+    getTrainingProgramVIEW(typeTrainingId, subtypeTrainingId, mgId, page){
+        return service.getRestClient().get(api_url+"/view", { params: { 
+            typeTrainingId : typeTrainingId,
+            subtypeTrainingId : subtypeTrainingId,
+            mgId : mgId,
+            page : page,
+            size : 18
+        }});       
     }
+
+    getTPfirstPage(){
+        return service.getRestClient().get(api_url+"/viewfirstpage");       
+    }
+    
 
     postTrainingProgramDelete(data){
         return service.getRestClient().post(api_url+"/delete", data);
@@ -34,7 +44,6 @@ export class TrainingProgramService {
         return service.getRestClient().get(api_url+"/edit/details/privatelist", { params: { id : id}});
     }
 
-
     postEditDetailsPrivate(data){
         return service.getRestClient().post(api_url+"/edit/details/private", data);
     }
@@ -53,6 +62,16 @@ export class TrainingProgramService {
         return service.getRestClient().post(api_url+"/addtptouser", data);
     }
 
-    
+    getTPComments(tpid){
+        return service.getRestClient().get(api_url+"/comments", { params: { tpid : tpid}});
+    }
 
+    postTPComments(data){
+        return service.getRestClient().post(api_url+"/comments", data);
+    }    
+
+    postTPCommentsDelete(data){
+        return service.getRestClient().post(api_url+"/commentsdelete", data);
+    }    
+    
 }

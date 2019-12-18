@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { TrainingService } from '../../../service/TrainingService';
-import { Button, Select, Form, Input,  Checkbox, message, notification , Switch } from 'antd';
+import { Button, Select, Form, Input, Breadcrumb, notification , Switch } from 'antd';
 import './Exercises.css';
+import { ACCESS_TOKEN } from '../../../constants';
+import {withRouter, Link } from 'react-router-dom';
+
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
-import { ACCESS_TOKEN } from '../../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -18,10 +20,29 @@ class Exercises extends Component {
 
     render() {
         const exercisesid = this.props.match.params.exercisesid; 
-
         const AntWrappedLoginForm = Form.create()(ExercisesForm)
+
+        const breadcrumb = [];
+        breadcrumb.push(<Breadcrumb.Item><Link to={'/exercises/all'}>Список упражнений</Link></Breadcrumb.Item>);
+
+        if(exercisesid == null){
+            breadcrumb.push(<Breadcrumb.Item><Link to={'/exercises/edit'}>Добавление упражнения</Link></Breadcrumb.Item>);
+        }else{
+            breadcrumb.push(<Breadcrumb.Item><Link to={'/exercises/media/'+exercisesid}>Упражнение</Link></Breadcrumb.Item>);
+            breadcrumb.push(<Breadcrumb.Item><Link to={'/exercises/edit/'+exercisesid}>Редактирование упражнения</Link></Breadcrumb.Item>);
+        }
+        
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} exercisesId={exercisesid}  />
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        {breadcrumb}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} exercisesId={exercisesid}  />
+                </div>
+            </div>
         );
     }
 }
@@ -32,6 +53,7 @@ class ExercisesForm extends Component {
         this.state = {
             muscleGroupsResponseList : [],
             typeTrainingResponseList : [],
+            subtypeTrainingList: [],
 
             id : '',
             name: '',
@@ -40,23 +62,16 @@ class ExercisesForm extends Component {
             typeTrainingId: '',
             subtypeTrainingId: '',
             muscleGroups: [],
-
-            subtypeTrainingList: [],
          
             isLoading: true,
             serverError: false,
             notFound: false,
         }
 
-    
         this.funcCreateExercisesCreate = this.funcCreateExercisesCreate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.changeIsPrivate = this.changeIsPrivate.bind(this);
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
-        this.handleMuskuleGroupChange = this.handleMuskuleGroupChange.bind(this);
-        
-        
-
 
         this.trainingService = new TrainingService();
     }
@@ -167,28 +182,11 @@ class ExercisesForm extends Component {
                     subtypeTrainingList :[]
                 })
         }).catch(error => {
-            notification.error({
-                message: 'Polling App',
-                description: error.message || 'Sorry! Something went wrong. Please try again!'
-            });
             this.setState({
                 subtypeTrainingList : []
             })  
         });    
       };
-
-
-      handleMuskuleGroupChange = value => {
-        // const list = [];
-        // value.forEach((val, valIndex) => {
-        //     this.state.muscleGroups.forEach((valList, valListIndex) => {
-        //         if(valList.id == val){
-        //             list.push(valList);
-        //         }
-        //     });
-        // });        
-      };
-
 
     componentDidMount() {
         if(!localStorage.getItem(ACCESS_TOKEN)) {
@@ -248,7 +246,7 @@ class ExercisesForm extends Component {
                         placeholder="Описание"/>
                     )}
                 </FormItem>
-                <FormItem>
+                <FormItem label="Приватность">
                         <Switch 
                             onChange={this.changeIsPrivate}
                             checked={this.state.isPrivate}
@@ -279,16 +277,15 @@ class ExercisesForm extends Component {
                 })(
                     <Select placeholder="Выберите подтип тренировки">
                        {!this.state.subtypeTrainingList.length == 0 ? 
-                            this.state.subtypeTrainingList.map(city => (
-                                (this.state.subtypeTrainingId == city.id ?
-                                    <Option defaultValue key={city.id}>{city.name}</Option>
+                            this.state.subtypeTrainingList.map(st => (
+                                (this.state.subtypeTrainingId == st.id ?
+                                    <Option defaultValue key={st.id}>{st.name}</Option>
                                     :
-                                    <Option key={city.id}>{city.name}</Option>
+                                    <Option key={st.id}>{st.name}</Option>
                                 ))
                                 
                             ): null
-                        }
-                        
+                        }     
                     </Select>,
                 )}
                 </Form.Item>
@@ -298,9 +295,7 @@ class ExercisesForm extends Component {
                 })(
                 <Select
                     mode="multiple"
-                    placeholder="Выберите группу мышц"
-                    onChange={this.handleMuskuleGroupChange}
-                >
+                    placeholder="Выберите группу мышц">
                        {
                         !this.state.muscleGroupsResponseList.length == 0 ? 
                             muscleGroupsResponseViews 

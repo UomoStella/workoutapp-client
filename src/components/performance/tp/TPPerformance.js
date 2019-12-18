@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col, notification, Pagination, Button} from 'antd';
+import {withRouter, Link } from 'react-router-dom';
+
+import { Row, Col, notification, Pagination, Breadcrumb, Switch} from 'antd';
 import { PerformanceService } from '../../../service/PerformanceService';
 import TPPElement from './TPPElement';
 import { ACCESS_TOKEN } from '../../../constants';
@@ -7,6 +9,8 @@ import List from '../../templats/List';
 import LoadingIndicator from '../../LoadingIndicator';
 import ServerError  from '../../../error/ServerError';
 import NotFound from '../../../error/NotFound';
+import AlertTable from '../../../error/AlertTable';
+
 
 class TPPerformance extends Component {
     constructor(props) {
@@ -18,8 +22,11 @@ class TPPerformance extends Component {
             totalElements: '',
             totalPages: '',
             last: '',
+            isOpen: false,
 
-            isLoading: true,
+
+            isLoadingTable: true,
+            isLoading: false,
             serverError: false,
             notFound: false,
         };
@@ -36,12 +43,12 @@ class TPPerformance extends Component {
         this.getContentVIEW(pageInx);
     }
 
-    getContentVIEW(pageNum){
+    getContentVIEW(pageNum, isOpen){
         this.setState({
-            isLoading: true,
+            isLoadingTable: true,
         });
 
-        this.performanceService.getAllTPP(pageNum)
+        this.performanceService.getAllTPP(pageNum, isOpen)
         .then(response => {
             this.setState({
                 content: response.data.content,
@@ -51,7 +58,7 @@ class TPPerformance extends Component {
                 totalPages: response.data.totalPages,
                 last: response.data.last,
 
-                isLoading: false,
+                isLoadingTable: false,
             });
         }).catch(error => {
             notification.error({
@@ -61,14 +68,14 @@ class TPPerformance extends Component {
             if(error.status === 404) {
                 this.setState({
                     notFound: true,
-                    isLoading: false,
+                    isLoadingTable: false,
                     serverError: false
                 });
             } else {
                 this.setState({
                     serverError: true,
                     notFound: false,
-                    isLoading: false
+                    isLoadingTable: false
                 });        
             }
         });
@@ -81,6 +88,16 @@ class TPPerformance extends Component {
 
         this.getContentVIEW();
     }
+
+    changeIsOpen = () => {
+        this.getContentVIEW(0, this.state.isOpen);
+
+        this.setState(previousState => {
+          return { 
+              isOpen: !previousState.isOpen 
+            };
+        });
+      };
 
 
     render() {   
@@ -100,39 +117,66 @@ class TPPerformance extends Component {
         const valueList = [];
         this.state.content.forEach((value) => { 
             valueList.push(
-                <Col md={8} gutter={[16, 16]} >
+                <Col md={6} style={{minWidth: 300}} gutter={[16, 16]} >
                     <TPPElement id={value.id}
+                        viewid={1}
                         tpId={value.tpId}
                         dwuId={value.dwuId}
                         tpName={value.tpName}
                         tpBase64Image={value.tpBase64Image}
+                        isDone={value.isDone}
+                        dateUpdate={value.dateUpdate}
+                        isEdit={true}
                         dwResponse={value.dwResponse}/>
                 </Col>
             );
         });
         
         return (
-            <Row  gutter={[16, 16]}>
-                <Col span={24}>
-                    {!this.state.isLoading ?
-                    <div>
-                        {this.state.content.length != 0 ?
-                        <Row gutter={16} className="tpview-list">
-                            <List  Content={valueList} />
-                        </Row>
-                        :
-                        <p>Нет данных!!</p>
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/performance/tp'}>Дневное задание</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <Row gutter={[16, 16]} className="borderBottomDotted">
+                        <Col md={20}>
+                            <p className="title-page">Дневное задание</p>
+                        </Col>
+                        <Col nd={4}>
+                            <div className="textRight">
+                                <Switch  checkedChildren="Архив" unCheckedChildren="Live"
+                                    onChange={this.changeIsOpen} checked={this.state.isOpen}/>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row  gutter={[16, 16]}>
+                        {!this.state.isLoadingTable ?
+                        <Col span={24}>
+                            {!this.state.isLoading ?
+                            <div>
+                                {this.state.content.length != 0 ?
+                                <Row gutter={16} className="tpview-list">
+                                    <List  Content={valueList} />
+                                    <Col span={24}>
+                                        <div className="ant-pagination-div">
+                                            <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
+                                        </div>
+                                    </Col>
+                                </Row>
+                                :
+                                <AlertTable/>
+                                }
+                            </div>
+                            :
+                            <LoadingIndicator/>
                         }
-                    </div>
-                    :
-                    <LoadingIndicator/>
-                }
-                </Col>
-
-                <Col span={24}>
-                    <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
-                </Col>
-            </Row>
+                        </Col>
+                        : <LoadingIndicator/>}
+                    </Row>
+                </div>
+            </div>
     );
     }
 }

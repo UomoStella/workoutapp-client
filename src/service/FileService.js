@@ -39,4 +39,25 @@ export class FileService {
     deleteTrainingProgramImage(data){    
         return service.getRestClient().post('/trainingprogram/delete/image', data);
     }
+
+
+//////////////RECIPE
+
+    updateRecipeVideoLink(data){    
+        return service.getRestClient().post('/recipe/media/linkvideo', data);
+    }
+    deleteRecipeFileVideo(data){    
+        return service.getRestClient().post('/recipe/media/delete/filevideo', data);
+    }
+    uploadRecipeFileVideo(data){
+        return service.getRestClient().post('/recipe/media/filevideo', data);
+    }
+
+    deleteRecipeImage(data){    
+        return service.getRestClient().post('/recipe/media/delete/image', data);
+    }
+    uploadRecipeImage(data){
+        return service.getRestClient().post('/recipe/media/image', data);
+    }
+
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Icon, Tag, Tabs, Typography, Row, Col } from 'antd';
 import { API_BASE_URL } from '../../../constants';
-import ExcersicesLogo from '../../../resources/excersices.png';
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 import VideoPlayer from '../../player/VideoPlayer';
 import './TrainingDescriptionView.css';
 

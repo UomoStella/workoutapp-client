@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import { Layout, Menu, Dropdown, Icon } from 'antd';
 const Header = Layout.Header;
+
+const { SubMenu } = Menu;
     
 class AppHeader extends Component {
     constructor(props) {
@@ -19,40 +21,71 @@ class AppHeader extends Component {
         let menuItems;
         if(this.props.currentUser) {
           menuItems = [
-            <Menu.Item key="/exercises/all">
-              <Link to="/exercises/all">
-                <Icon type="heart" className="nav-icon" /> <span>Упражнения</span>
-              </Link>
-            </Menu.Item>,
-            <Menu.Item key="/trainingprogram/all">
-              <Link to="/trainingprogram/all">
-                <Icon type="rise" /><span>Программа тренировок</span>
-              </Link>
-            </Menu.Item>,
-              <Menu.Item key="/trainingprogram/viewall">
-              <Link to="/trainingprogram/viewall">
-                <Icon type="eye" /><span>Просмотр</span>
-              </Link>
-            </Menu.Item>,
-            <Menu.Item key="/performance/tp">
-              <Link to="/performance/tp">
-                <Icon type="eye" /><span>Дневное задание</span>
-              </Link>
+              <Menu.Item key="home">
+                <Link to="/">
+                  <Icon type="home"/>
+                </Link>
+              </Menu.Item>,
+              <SubMenu title={<span className="submenu-title-wrapper">Тренеровки</span>}>
+              <Menu.Item key="/performance/tp">
+                <Link to={'/performance/tp'}>
+                <Icon type="exclamation" className="nav-icon" /><span>Дневное задание</span>
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="/exercises/all">
+                <Link to="/exercises/all">
+                  <Icon type="heart" className="nav-icon" /> <span>Упражнения</span>
+                </Link>
+              </Menu.Item>
+              <Menu.ItemGroup title={<span className="submenu-title-wrapper">Программа тренировок</span>}>
+                <Menu.Item key="/trainingprogram/all">
+                  <Link to="/trainingprogram/all">
+                    <Icon type="rise"/> <span>Редактирование</span>
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="/trainingprogram/viewall">
+                  <Link to="/trainingprogram/viewall">
+                    <Icon type="skin" /> <span>Просмотр</span>
+                  </Link>
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </SubMenu>,
+            
+            <SubMenu title={<span className="submenu-title-wrapper">Рацион</span>}>
+              <Menu.Item key="/recipe/all">
+                <Link to="/recipe/all">
+                  <span>Рецепты</span>
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="/ration/all">
+                <Link to="/ration/all">
+                  <span>Дневной рацион</span>
+                </Link>
+              </Menu.Item>
+            </SubMenu>,
+          
+            <Menu.Item key="calculator">
+              <Link to="/calc"><Icon type="calculator" /></Link>
             </Menu.Item>,
 
-
-
-            <Menu.Item key="/">
-              <Link to="/">
-                <Icon type="home" className="nav-icon" />
-              </Link>
-            </Menu.Item>,
-            <Menu.Item key="/profile" className="profile-menu">
-                  <ProfileDropdownMenu  currentUser={this.props.currentUser}  handleMenuClick={this.handleMenuClick}/>
-            </Menu.Item>
+              <SubMenu title={<span className="submenu-title-wrapper"><Icon type="user"/></span>} onClick={this.handleMenuClick}>
+                <Menu.Item key="/users/test">
+                  <Link to={'/users/' +this.props.currentUser.username}>
+                      <span>Профиль</span>
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="logout">
+                    <span>Выйти</span>
+                </Menu.Item>
+            </SubMenu>,
           ]; 
         } else {
           menuItems = [
+            <Menu.Item key="home">
+            <Link to="/">
+              <Icon type="home"/>
+            </Link>
+          </Menu.Item>,
             <Menu.Item key="/login">
               <Link to="/login">Войти</Link>
             </Menu.Item>,

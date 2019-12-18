@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { TrainingProgramService } from '../../service/TrainingProgramService';
-import { notification, Pagination, Button, Row, Col} from 'antd';
+import { notification, Pagination, Button, Row, Col, Breadcrumb} from 'antd';
 import {withRouter, Link } from 'react-router-dom';
 import ServerError  from '../../error/ServerError';
+import AlertTable  from '../../error/AlertTable';
+
 import LoadingIndicator from '../LoadingIndicator';
 import NotFound from '../../error/NotFound';
 import { ACCESS_TOKEN } from '../../constants';
@@ -22,6 +24,8 @@ class TrainingProgramAll extends Component {
             totalElements: '',
             totalPages: 0,
             last: '',
+            commentsList: [],
+
             isLoadingTable: false,
             isLoading: false
         };
@@ -30,8 +34,7 @@ class TrainingProgramAll extends Component {
 
         this.paginationChange = this.paginationChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
-        
+        this.handleEdit = this.handleEdit.bind(this);        
 
         this.trainingProgramService = new TrainingProgramService();
     }
@@ -42,8 +45,6 @@ class TrainingProgramAll extends Component {
             page: pageNum
         });
 
-        console.log(pageNum);
-        
         this.trainingProgramService.getTrainingProgramAll(pageNum).then(response => {
             const exercisesRespons  = response.data;
             console.log(exercisesRespons);
@@ -117,8 +118,6 @@ class TrainingProgramAll extends Component {
         }
     }
 
-
-
     componentDidMount() {
         if(!localStorage.getItem(ACCESS_TOKEN)) {
             this.props.handleLogout('/login', 'error', 'Необходима авторизация.'); 
@@ -134,27 +133,20 @@ class TrainingProgramAll extends Component {
     }
 
     render() {   
-        if(this.state.isLoading) {
-            return <LoadingIndicator/>
-        }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
 
-
         const page = this.state.page + 1;
         const totalPages = 10 * this.state.totalPages;
-
 
         const valueList = [];
         this.state.content.forEach((value) => { 
             valueList.push(
-                <Col md={6} gutter={[16, 16]} >
+                <Col md={6} style={{minWidth: '310px'}} gutter={[16, 16]} >
                     <ListElement id={value.id}
                         imageBase64={value.base64Image}
                         handleEdit={this.handleEdit}
@@ -171,33 +163,52 @@ class TrainingProgramAll extends Component {
 
         
         return (
-                <Row  gutter={[16, 16]}>
-                    <Col span={24}>
-                        <div style={{textAlign: 'right'}}>
-                            <Button type="primary"><Link to={'/trainingprogram/edit'}>Добавить программу</Link></Button> 
-                        </div>
-                    </Col>
-            
-                    <Col span={24}>
-                        {!this.state.isLoading ?
-                        <div>
-                            {this.state.content.length != 0 ?
-                            <Row gutter={16} className="exercises-list">
-                                <List handleDelete={this.handleDelete} Content={valueList} handleEdit={this.handleEdit} />
-                            </Row>
-                            :
-                            <p>Нет данных!!</p>
-                            }
-                        </div>
-                        :
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/trainingprogram/all'}>Список программ</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <Row  gutter={[16, 16]} className="borderBottomDotted">
+                        <Col md={20}>
+                            <p className="title-page">Список программ тренировок</p>
+                        </Col>
+                        <Col md={4}>
+                            <div style={{textAlign: 'right'}}>
+                                <Button type="primary"><Link to={'/trainingprogram/edit'}>Добавить программу</Link></Button> 
+                            </div>
+                        </Col>
+                    </Row>
+                    {this.state.isLoading ?
                         <LoadingIndicator/>
+                    :
+                        <Row  gutter={[16, 16]}>
+                            <Col span={24}>
+                                {!this.state.isLoading ?
+                                    <div>
+                                        {this.state.content.length != 0 ?
+                                        <Row gutter={16} className="exercises-list">
+                                            <List handleDelete={this.handleDelete} Content={valueList} handleEdit={this.handleEdit} />
+                                            <Col span={24}>
+                                                <div className="ant-pagination-div">
+                                                    <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                        :
+                                        <AlertTable/>
+                                        }
+                                    </div>
+                                :
+                                    <LoadingIndicator/>
+                                }
+                            </Col>
+                            
+                        </Row>
                     }
-                    </Col>
-
-                    <Col span={24}>
-                        <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
-                    </Col>
-                </Row>
+                </div>
+            </div>
         );
     }
 }

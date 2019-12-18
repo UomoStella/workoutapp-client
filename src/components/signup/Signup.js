@@ -279,7 +279,7 @@ class Signup extends Component {
 //////
     render(){
         return(
-            <div>
+            <div className="content-div">
                 <h1>Регистрация</h1>
                 <div>
                     <Form onSubmit={this.handleSubmit}>

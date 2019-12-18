@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
 import { Button, Row, Col, Icon } from 'antd';
-import ExcersicesLogo from '../../../resources/excersices.png';
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 import './DWElement.css';
 
 class DWElement extends Component {

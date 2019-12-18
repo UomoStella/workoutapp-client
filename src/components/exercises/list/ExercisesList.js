@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Row, Col} from 'antd';
 // import './ExercisesList.css';
 import LoadingIndicator from '../../LoadingIndicator';
-// import ExcersicesLogo from '../../../resources/excersices.png';
+import AlertTable from '../../../error/AlertTable';
+
+// import ExcersicesLogo from '../../../resources/excersices.jpg';
 import ExercisesElement from './ExercisesElement'
 
 class ExercisesList extends Component {
@@ -53,7 +55,7 @@ class ExercisesList extends Component {
         
         this.state.content.forEach((excersice, index) => { 
             excersicesList.push(
-                <Col md={6} gutter={[16, 16]} >
+                <Col md={6} style={{minWidth: '285px'}} gutter={[16, 16]} >
                     <ExercisesElement id={excersice.id}
                         name={excersice.name}
                         exercisesDelete={this.props.exercisesDelete}
@@ -71,7 +73,7 @@ class ExercisesList extends Component {
                             {excersicesList}
                         </Row>
                     :
-                        <p>Нет данных!!</p>
+                        <AlertTable/>
                     }
                 
                 </div>

@@ -3,7 +3,7 @@ import { Row, Col} from 'antd';
 // import './ExercisesList.css';
 import LoadingIndicator from '../LoadingIndicator';
 import './List.css';
-// import ExcersicesLogo from '../../../resources/excersices.png';
+// import ExcersicesLogo from '../../../resources/excersices.jpg';
 import ListElement from './ListElement'
 
 class List extends Component {

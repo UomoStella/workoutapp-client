@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
 import { Button, Row, Col, Modal, Icon } from 'antd';
 import LoadingIndicator from '../../LoadingIndicator';
-import ExcersicesLogo from '../../../resources/excersices.png';
+import ExcersicesLogo from '../../../resources/excersices.jpg';
 
 const {confirm} = Modal;
 
