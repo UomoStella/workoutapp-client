@@ -35,7 +35,7 @@ export class TrainingService {
 
     getExercisesListByPage(paginationpage){
         return service.getRestClient().get("/training/exercises/list", { params: { paginationpage : paginationpage,
-        size: 12}});
+        size: 8}});
     }
 
     postExercisesDelete(data){

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {withRouter, Link } from 'react-router-dom';
+
 import { RecipeService } from '../../../service/RecipeService';
-import { Button, Select, Form, Input,  Checkbox, message, notification , Switch } from 'antd';
+import { Button, Select, Form, Input,  notification , Breadcrumb } from 'antd';
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
@@ -19,7 +21,24 @@ class Recipe extends Component {
 
         const AntWrappedLoginForm = Form.create()(RecipeForm)
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} recipeId={recipeId}  />
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/recipe/all'}>Список рецептов</Link></Breadcrumb.Item>
+                        {recipeId == null ?
+                            <Breadcrumb.Item><Link to={'/recipe/details/'}>Добавление рецепта</Link></Breadcrumb.Item>
+                        : 
+                            [
+                            <Breadcrumb.Item><Link to={'/recipe/media/'+recipeId}>Рецепт</Link></Breadcrumb.Item>,
+                            <Breadcrumb.Item><Link to={'/recipe/details/'+recipeId}>Редактирование рецепта</Link></Breadcrumb.Item>
+                            ]
+                        }
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} recipeId={recipeId}  />
+                </div>
+            </div>
         );
     }
 }
@@ -153,7 +172,7 @@ class RecipeForm extends Component {
                         initialValue: this.state.description
                     })(
                     <TextArea
-                        rows={4}
+                        rows={12}
                         size="large"
                         placeholder="Описание"/>
                     )}

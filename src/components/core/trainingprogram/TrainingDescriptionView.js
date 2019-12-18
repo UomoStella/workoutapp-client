@@ -80,7 +80,7 @@ class TrainingDescriptionView extends Component {
 
     render() {   
         if(this.state.isLoading) {
-            return <LoadingIndicator/>
+            return <div className="content-div"><LoadingIndicator/></div>
         }
         if(this.state.notFound) {
             return <NotFound />;

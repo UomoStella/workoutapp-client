@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
-import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Input, List, Modal } from 'antd';
+
+import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Breadcrumb, List, Modal } from 'antd';
 import RationEdit from './RationEdit';
 import { RecipeService } from '../../../service/RecipeService';
-
 
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
@@ -171,20 +171,26 @@ class RationMedia extends Component {
     
     render() {   
         if(this.state.isLoading) {
-            return <LoadingIndicator/>
+            return <div className="content-div"><LoadingIndicator/></div>
         }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
 
-        console.log(this.state.trainingDescriptions);
         return (
             <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/ration/all'}>Список дневных рационов</Link></Breadcrumb.Item>
+                        {this.state.id ? 
+                            <Breadcrumb.Item><Link to={'/ration/media/'+this.state.id}>Дневной рацион</Link></Breadcrumb.Item>
+                        : null}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
                     <Row  gutter={[16, 16]}>
                         <Col md={18}>
                             <h2>Дневной рацион</h2>
@@ -249,6 +255,7 @@ class RationMedia extends Component {
                                 rationId={this.state.selectedRationId}/>
                             :  null}
                     </Drawer>
+                </div>
             </div>
         
         );

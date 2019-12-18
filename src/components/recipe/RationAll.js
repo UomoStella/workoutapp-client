@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { RecipeService } from '../../service/RecipeService';
-import { notification, Pagination, Button, Row, Col, Comment} from 'antd';
 import {withRouter, Link } from 'react-router-dom';
+
+import { RecipeService } from '../../service/RecipeService';
+import { notification, Pagination, Button, Row, Col, Breadcrumb } from 'antd';
 import { ACCESS_TOKEN } from '../../constants';
 
 import List from '../../components/templats/List';
@@ -136,7 +137,7 @@ class RationAll extends Component {
 
     render() {   
         if(this.state.isLoading) {
-            return <LoadingIndicator/>
+            return <div className="content-div"><LoadingIndicator/></div>
         }
 
         if(this.state.notFound) {
@@ -172,39 +173,48 @@ class RationAll extends Component {
 
         
         return (
-                <Row  gutter={[16, 16]}>
-                    <Col span={24}>
-                        <Row  gutter={[16, 16]}>
-                            <Col span={20}>
-                                <h2>Дневной рацион</h2>
-                            </Col>
-                            <Col span={4}>
-                                <div style={{textAlign: 'right'}}>
-                                    <Button type="primary"><Link to={'/ration/details/'}>Добавить рацион</Link></Button> 
-                                </div>
-                            </Col>
-                        </Row>
-                    </Col>
-            
-                    <Col md={24}>
-                        {!this.state.isLoading ?
-                        <div>
-                            {this.state.content.length != 0 ?
-                            <Row gutter={16} className="exercises-list">
-                                <List handleDelete={this.handleDelete} Content={valueList} handleEdit={this.handleEdit} />
-                                <Col span={24}>
-                                    <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
-                                </Col>
-                            </Row>
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/ration/all'}>Список дневных рационов</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <Row  gutter={[16, 16]} className="borderBottomDotted">
+                        <Col md={20}>
+                            <p className="title-page">Список дневных рационов</p>
+                        </Col>
+                        <Col md={4}>
+                            <div style={{textAlign: 'right'}}>
+                            <Link to={'/ration/details/'}><Button icon="plus" type="primary">Добавить рацион</Button></Link>
+                            </div>
+                        </Col>
+                    </Row>
+
+                    <Row  gutter={[16, 16]}>
+                        <Col md={24}>
+                            {!this.state.isLoading ?
+                            <div>
+                                {this.state.content.length != 0 ?
+                                <Row gutter={16} className="exercises-list">
+                                    <List handleDelete={this.handleDelete} Content={valueList} handleEdit={this.handleEdit} />
+                                    <Col span={24}>
+                                        <div className="ant-pagination-div">
+                                            <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
+                                        </div>
+                                    </Col>
+                                </Row>
+                                :
+                                <AlertTable/>
+                                }
+                            </div>
                             :
-                            <AlertTable/>
-                            }
-                        </div>
-                        :
-                        <LoadingIndicator/>
-                    }
-                    </Col>
-                </Row>
+                            <LoadingIndicator/>
+                        }
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         );
     }
 }

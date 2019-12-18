@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RecipeService } from '../../service/RecipeService';
-import { notification, Pagination, Button, Row, Col, Comment} from 'antd';
+import { notification, Pagination, Button, Row, Col, Breadcrumb} from 'antd';
 import {withRouter, Link } from 'react-router-dom';
 import { ACCESS_TOKEN } from '../../constants';
 
@@ -34,7 +34,6 @@ class RecipeAll extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         
-
         this.recipeService = new RecipeService();
     }
 
@@ -46,7 +45,6 @@ class RecipeAll extends Component {
         
         this.recipeService.getRecipeMediaPage(pageNum).then(response => {
             const recipeRespons  = response.data;
-
             this.setState({
                 content : recipeRespons.content,
                 page: pageNum,
@@ -136,7 +134,7 @@ class RecipeAll extends Component {
 
     render() {   
         if(this.state.isLoading) {
-            return <LoadingIndicator/>
+            return <div className="content-div"><LoadingIndicator/></div>
         }
 
         if(this.state.notFound) {
@@ -172,32 +170,47 @@ class RecipeAll extends Component {
 
         
         return (
-                <Row  gutter={[16, 16]}>
-                    <Col span={24}>
-                        <div style={{textAlign: 'right'}}>
-                            <Button type="primary"><Link to={'/recipe/details/'}>Добавить рецепт</Link></Button> 
-                        </div>
-                    </Col>
-            
-                    <Col md={24}>
-                        {!this.state.isLoading ?
-                        <div>
-                            {this.state.content.length != 0 ?
-                            <Row gutter={16} className="exercises-list">
-                                <List handleDelete={this.handleDelete} Content={valueList} handleEdit={this.handleEdit} />
-                                <Col span={24}>
-                                    <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
-                                </Col>
-                            </Row>
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/recipe/all'}>Список рецептов</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <Row  gutter={[16, 16]} className="borderBottomDotted">
+                        <Col md={20}>
+                            <p className="title-page">Список рецептов</p>
+                        </Col>
+                        <Col md={4}>
+                            <div style={{textAlign: 'right'}}>
+                            <Link to={'/recipe/details/'}><Button icon="plus" type="primary">Добавить рецепт</Button></Link> 
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row  gutter={[16, 16]}>                
+                        <Col md={24}>
+                            {!this.state.isLoading ?
+                            <div>
+                                {this.state.content.length != 0 ?
+                                <Row gutter={16} className="exercises-list">
+                                    <List handleDelete={this.handleDelete} Content={valueList} handleEdit={this.handleEdit} />
+                                    <Col span={24}>
+                                        <div className="ant-pagination-div">
+                                            <Pagination  onChange={this.paginationChange} defaultCurrent={page} total={totalPages} />
+                                        </div>
+                                    </Col>
+                                </Row>
+                                :
+                                <AlertTable/>
+                                }
+                            </div>
                             :
-                            <AlertTable/>
-                            }
-                        </div>
-                        :
-                        <LoadingIndicator/>
-                    }
-                    </Col>
-                </Row>
+                            <LoadingIndicator/>
+                        }
+                        </Col>
+                    </Row>
+                </div>
+            </div>
         );
     }
 }

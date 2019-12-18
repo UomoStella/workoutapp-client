@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {withRouter, Link } from 'react-router-dom';
+
 import { RecipeService } from '../../../service/RecipeService';
-import { Button, Select, Form, Input,  Checkbox, message, notification , Switch } from 'antd';
+import { Button, Select, Form, Input,  Breadcrumb, notification } from 'antd';
 import ServerError  from '../../../error/ServerError';
 import LoadingIndicator from '../../LoadingIndicator';
 import NotFound from '../../../error/NotFound';
@@ -19,7 +21,24 @@ class RationDetails extends Component {
 
         const AntWrappedLoginForm = Form.create()(RationDetailsForm)
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} rationDayId={rationDayId}  />
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/ration/all'}>Список дневных рационов</Link></Breadcrumb.Item>
+                        {rationDayId == null ?
+                            <Breadcrumb.Item><Link to={'/ration/details/'}>Добавление дневного рациона</Link></Breadcrumb.Item>
+                        :
+                            [
+                                <Breadcrumb.Item><Link to={'/ration/media/'+rationDayId}>Дневной рацион</Link></Breadcrumb.Item>,
+                                <Breadcrumb.Item><Link to={'/ration/details/'+rationDayId}>Редактирование дневного рациона</Link></Breadcrumb.Item>
+                            ]
+                        }
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <AntWrappedLoginForm handleLogout={this.props.handleLogout} handleMessage={this.props.handleMessage} rationDayId={rationDayId}  />
+                </div>
+            </div>
         );
     }
 }

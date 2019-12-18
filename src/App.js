@@ -91,10 +91,9 @@ class App extends Component {
         message: 'Сообщение',
         description: "Вы успешно вошли в учетную запись.",
       });
-      this.loadCurrentUser();
-    
       this.props.history.push("/");
-      // window.location.assign("/");
+
+      this.loadCurrentUser();
    }
 
   handleLogout(redirectTo="/", notificationType="success", description="Вы успешно вышли с учетной записи.") {
@@ -144,6 +143,7 @@ class App extends Component {
 
                   <Route exact path="/" component={Landing}/>
                   
+
                   <Route path="/login" render={(props) => 
                     <Login handleMessage={this.handleMessage} onLogin={this.handleLogin} {...props} />}/>
                   
@@ -186,6 +186,14 @@ class App extends Component {
                     <TrainingProgramDetails handleMessage={this.handleMessage} 
                           handleLogout={this.handleLogout}  {...props}/>}></Route>
 
+                <Route path="/workout/details/edit/:trainingProgramId/:day" render={(props) => 
+                    <DailyWorkoutDetails handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout} {...props} />}></Route>
+
+                <Route path="/workout/edit/:trainingProgramId/:day/:id?" render={(props) => 
+                    <DailyWorkoutEdit handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
+
 
 {/* TrainingProgramView */}
                 <Route path="/trainingprogram/viewall" render={(props) => 
@@ -209,36 +217,34 @@ class App extends Component {
                     <DWUPerformance handleMessage={this.handleMessage} 
                           handleLogout={this.handleLogout}  {...props}/>}></Route>  
                 
-                
+{/* РЕЦЕПТЫ */}
+                <Route path="/recipe/all" render={(props) => 
+                    <RecipeAll handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
 
-
-
-
-                <Route path="/workout/edit/:trainingProgramId/:day/:id?" render={(props) => 
-                    <DailyWorkoutEdit handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
-
-
-                <Route path="/workout/details/edit/:trainingProgramId/:day" render={(props) => 
-                    <DailyWorkoutDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout} {...props} />}></Route>
-
-                
-
-
-                
-              
                 <Route path="/recipe/details/:recipeId?" render={(props) => 
-                    <Recipe handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
-               <Route path="/recipe/media/:recipeId" render={(props) => 
-                    <RecipeMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                    <Recipe handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
+
+                <Route path="/recipe/media/:recipeId" render={(props) => 
+                    <RecipeMedia handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>     
+
+{/* РАЦИОН */}           
+                <Route path="/ration/all" render={(props) => 
+                    <RationAll handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
+
                <Route path="/ration/details/:rationDayId?" render={(props) => 
-                    <RationDetails handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                    <RationDetails handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
+
                <Route path="/ration/media/:rationDayId" render={(props) => 
-                    <RationMedia handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
-               <Route path="/recipe/all" render={(props) => 
-                    <RecipeAll handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
-               <Route path="/ration/all" render={(props) => 
-                    <RationAll handleMessage={this.handleMessage} handleLogout={this.handleLogout}  {...props}/>}></Route>
+                    <RationMedia handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
+               
                 <Route path="/ration/view/:rdId/:rId?" render={(props) => <RationView   {...props}/>}></Route>
+
                 <Route path="/calc" render={(props) =>  <Calculator {...props}/>}></Route>
                 <Route path="/news/:newsid" render={(props) => <News {...props}/>}/>
                 

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Select, Form, Input,  Typography , message, notification , Switch } from 'antd';
+import {withRouter, Link } from 'react-router-dom';
+
+import { Button, Select, Form, Input,  Typography , Breadcrumb, notification } from 'antd';
 import {DailyWorkoutService} from '../../../service/DailyWorkoutService';
 import {RecipeService} from '../../../service/RecipeService';
 import { ACCESS_TOKEN } from '../../../constants';
@@ -23,11 +25,36 @@ class DailyWorkoutEdit extends Component {
         const id = this.props.match.params.id; 
         const day = this.props.match.params.day; 
 
+        const breadcrumbList = [];
+
+        breadcrumbList.push(<Breadcrumb.Item><Link to={'/trainingprogram/all'}>Список программ</Link></Breadcrumb.Item>);
+        if(trainingProgramId != null){
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/trainingprogram/details/'+trainingProgramId}>Программа тренировок</Link></Breadcrumb.Item>);                
+        }
+
+        if(id == null){
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/workout/edit/'+trainingProgramId+'/'+day}>Добавление дневной тренировкик</Link></Breadcrumb.Item>);                
+        }else{
+            if(day != null){
+                breadcrumbList.push(<Breadcrumb.Item><Link to={'/workout/details/edit/'+trainingProgramId+'/'+day}>Дневная тренировка</Link></Breadcrumb.Item>);
+            }
+            breadcrumbList.push(<Breadcrumb.Item><Link to={'/workout/edit/'+trainingProgramId+'/'+day+'/'+id}>Редактирование дневной тренировкик</Link></Breadcrumb.Item>);
+        }
+
         const AntWrappedLoginForm = Form.create()(DailyWorkoutEditForm)
         return (
-            <AntWrappedLoginForm handleLogout={this.props.handleLogout} 
-                handleMessage={this.props.handleMessage} 
-                trainingProgramId={trainingProgramId} id={id} day={day}  />
+            <div>
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        {breadcrumbList}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+                    <AntWrappedLoginForm handleLogout={this.props.handleLogout} 
+                        handleMessage={this.props.handleMessage} 
+                        trainingProgramId={trainingProgramId} id={id} day={day}  />
+                </div>
+            </div>
         );
     }
 }

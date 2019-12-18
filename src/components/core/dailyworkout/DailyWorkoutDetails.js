@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter, Link } from 'react-router-dom';
-import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Input, List, Modal } from 'antd';
+import { Drawer, notification, Button, Row, Col, Tabs, Icon, Typography, Breadcrumb, List, Modal } from 'antd';
 
 import { DailyWorkoutService } from '../../../service/DailyWorkoutService';
 import { TrainingDescriptionService } from '../../../service/TrainingDescriptionService';
@@ -192,20 +192,29 @@ class DailyWorkoutDetails extends Component {
     
     render() {   
         if(this.state.isLoading) {
-            return <LoadingIndicator/>
+            return <div className="content-div"><LoadingIndicator/></div>
         }
-
         if(this.state.notFound) {
             return <NotFound />;
         }
-
         if(this.state.serverError) {
             return (<ServerError />);
         }
 
-        console.log(this.state.trainingDescriptions);
         return (
             <div>
+                <div className="breadcrumb-div">
+                <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/trainingprogram/all'}>Список программ</Link></Breadcrumb.Item>
+                        {this.state.trainingProgramId ?
+                        <Breadcrumb.Item><Link to={'/trainingprogram/details/'+this.state.trainingProgramId}>Программа тренировок</Link></Breadcrumb.Item>
+                        : null}
+                        {this.state.trainingProgramId && this.state.day ?
+                        <Breadcrumb.Item><Link to={'/workout/details/edit/'+this.state.trainingProgramId+'/'+this.state.day}>Дневная тренировка</Link></Breadcrumb.Item>
+                        : null}
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
                     <Row  gutter={[16, 16]}>
                         <Col md={18}>
                             <Title level={3}>{this.state.trainingProgramName} (день {this.state.day})</Title>
@@ -246,7 +255,6 @@ class DailyWorkoutDetails extends Component {
                                                 dataSource={this.state.trainingDescriptions}
                                                 renderItem={item => (
                                                 <List.Item actions={[
-                                                // <a key="list-loadmore-more">Вверх</a>,
                                                 <Link to={'/trainingprogram/view/'+item.dailyWorkoutResponse.id +'/'+ item.id}>Вид</Link>, 
                                                 <a onClick={this.showDrawerVal.bind(this, item.id)} key="list-loadmore-more">Изменить</a>,
                                                 <a onClick={this.deleteTrainingDescription.bind(this, item.id)} key="list-loadmore-more">Удалить</a>]}>
@@ -267,17 +275,13 @@ class DailyWorkoutDetails extends Component {
                             </Tabs>
                         </Col>
                     </Row>
-                    
-                    <Drawer title="Редактирование упражнения"
-                        width={720}
-                        onClose={this.onClose}
-                        visible={this.state.visible}
-                        bodyStyle={{ paddingBottom: 80 }}>
+                    <Drawer title="Редактирование упражнения" width={720} onClose={this.onClose} visible={this.state.visible} bodyStyle={{ paddingBottom: 80 }}>
                         {this.state.visible ?
                             <TrainingDescriptionEdit getExercisesAllBydailyid={this.getExercisesAllBydailyid} TDId={this.state.selectedTDId} dailyid={this.state.id}/>
                             :  null}
                     </Drawer>
-            </div>
+                </div>
+        </div>
         
         );
     }

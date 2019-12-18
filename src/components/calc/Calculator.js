@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Row, Col, Radio, Form, InputNumber,  message, notification } from 'antd';
+import {withRouter, Link } from 'react-router-dom';
+
+import { Button, Row, Col, Radio, Form, InputNumber,  Breadcrumb, notification } from 'antd';
 import { CalculatorService } from '../../service/CalculatorService';
 
 import ServerError  from '../../error/ServerError';
@@ -72,7 +74,7 @@ class CalculatorForm extends Component {
                 }).catch(error => {
                     notification.error({
                         message: 'Ошибка',
-                        description: error.message || 'Извините! Что-то пошло не так. Пожалуйста попробуйте снова!'
+                        description:  'Извините! Произошла ошибка расчетов измените заданные данные!!'
                     });
                 });    
             }
@@ -98,7 +100,7 @@ class CalculatorForm extends Component {
     
     render() {   
         if(this.state.isLoading) {
-            return <LoadingIndicator/>
+            return <div className="content-div"><LoadingIndicator/></div>
         }
         if(this.state.notFound) {
             return <NotFound />;
@@ -111,89 +113,97 @@ class CalculatorForm extends Component {
 
         return (
             <div>
-                <Row>
-                    <Col span={3}></Col>
-                    <Col span={18}>
-                        <Form onSubmit={this.handleSubmitCalory}>
-                            <h3>Расчет процента жира</h3>
-                            <FormItem>
-                                {getFieldDecorator('genderValue', {
-                                    initialValue: this.state.genderValue,
-                                    rules: [{ required: true,  message: 'Введите значение' }],
-                                })(
-                                <Radio.Group onChange={this.onChange} value={this.state.genderValue}>
-                                    <Radio value={0}>Мужчина</Radio>
-                                    <Radio value={1}>Женщина</Radio>
-                                </Radio.Group>
-                                )}
-                            </FormItem>
-                            <FormItem label="Вес (кг):">
-                                {getFieldDecorator('caloryWeight', {
-                                    initialValue: this.state.caloryWeight,
-                                    rules: [{ required: true,  message: 'Введите значение' }],
-                                })(
-                                <InputNumber style={{width: '100%'}} min="1" placeholder="Вес (кг)"/>
-                                )}
-                            </FormItem>
-                            <FormItem label="Рост (см):">
-                                {getFieldDecorator('caloryHeight', {
-                                    initialValue: this.state.caloryHeight,
-                                    rules: [{ required: true,  message: 'Введите значение' }],
-                                })(
-                                <InputNumber style={{width: '100%'}} min="1" placeholder="Рост (см)"/>
-                                )}
-                            </FormItem>
-                            <FormItem label="Объем шеи (см):">
-                                {getFieldDecorator('neckVolume', {
-                                    initialValue: this.state.neckVolume,
-                                    rules: [{ required: true,  message: 'Введите значение' }],
-                                })(
-                                <InputNumber style={{width: '100%'}} min="1" placeholder="Объем шеи (см)"/>
-                                )}
-                            </FormItem>
-                            <FormItem label="Объем талии (см):">
-                                {getFieldDecorator('waist', {
-                                    initialValue: this.state.waist,
-                                    rules: [{ required: true,  message: 'Введите значение' }],
-                                })(
-                                <InputNumber style={{width: '100%'}} min="1" placeholder="Объем талии (см)"/>
-                                )}
-                            </FormItem>
-                            {this.state.isFamile ?
-                            <FormItem label="Объем бедер (см):">
-                                {getFieldDecorator('hips', {
-                                    initialValue: this.state.hips,
-                                    rules: [{ required: true,  message: 'Введите значение' }],
-                                })(
-                                <InputNumber style={{width: '100%'}} min="1" placeholder="Объем бедер (см)"/>
-                                )}
-                            </FormItem>
-                            : null}
+                <div className="breadcrumb-div">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to={'/calc/'}>Расчет</Link></Breadcrumb.Item>
+                    </Breadcrumb>
+                </div>
+                <div className="content-div">
+
+                    <Row>
+                        <Col span={3}></Col>
+                        <Col span={18}>
+                            <Form onSubmit={this.handleSubmitCalory}>
+                                <h3>Расчет процента жира</h3>
+                                <FormItem>
+                                    {getFieldDecorator('genderValue', {
+                                        initialValue: this.state.genderValue,
+                                        rules: [{ required: true,  message: 'Введите значение' }],
+                                    })(
+                                    <Radio.Group onChange={this.onChange} value={this.state.genderValue}>
+                                        <Radio value={0}>Мужчина</Radio>
+                                        <Radio value={1}>Женщина</Radio>
+                                    </Radio.Group>
+                                    )}
+                                </FormItem>
+                                <FormItem label="Вес (кг):">
+                                    {getFieldDecorator('caloryWeight', {
+                                        initialValue: this.state.caloryWeight,
+                                        rules: [{ required: true,  message: 'Введите значение' }],
+                                    })(
+                                    <InputNumber style={{width: '100%'}} min="1" placeholder="Вес (кг)"/>
+                                    )}
+                                </FormItem>
+                                <FormItem label="Рост (см):">
+                                    {getFieldDecorator('caloryHeight', {
+                                        initialValue: this.state.caloryHeight,
+                                        rules: [{ required: true,  message: 'Введите значение' }],
+                                    })(
+                                    <InputNumber style={{width: '100%'}} min="1" placeholder="Рост (см)"/>
+                                    )}
+                                </FormItem>
+                                <FormItem label="Объем шеи (см):">
+                                    {getFieldDecorator('neckVolume', {
+                                        initialValue: this.state.neckVolume,
+                                        rules: [{ required: true,  message: 'Введите значение' }],
+                                    })(
+                                    <InputNumber style={{width: '100%'}} min="1" placeholder="Объем шеи (см)"/>
+                                    )}
+                                </FormItem>
+                                <FormItem label="Объем талии (см):">
+                                    {getFieldDecorator('waist', {
+                                        initialValue: this.state.waist,
+                                        rules: [{ required: true,  message: 'Введите значение' }],
+                                    })(
+                                    <InputNumber style={{width: '100%'}} min="1" placeholder="Объем талии (см)"/>
+                                    )}
+                                </FormItem>
+                                {this.state.isFamile ?
+                                <FormItem label="Объем бедер (см):">
+                                    {getFieldDecorator('hips', {
+                                        initialValue: this.state.hips,
+                                        rules: [{ required: true,  message: 'Введите значение' }],
+                                    })(
+                                    <InputNumber style={{width: '100%'}} min="1" placeholder="Объем бедер (см)"/>
+                                    )}
+                                </FormItem>
+                                : null}
 
 
-                            {this.state.calcVisible ?
-                            <Row getter={16}>
-                                <Col span={24}>
-                                {this.state.message != null &&
-                                    this.state.message.length !=0 ?
-                                    <p><span className="text-exercises_media">{this.state.message}</span></p>
-                                :
-                                <div>
-                                    <p>Процент жира в организме: <span className="text-exercises_media">{this.state.bodyFatPercentage}%</span></p>
-                                    <p>Масса жира: <span className="text-exercises_media">{this.state.fatMass} кг</span></p>
-                                    <p>Скудная масса тела: <span className="text-exercises_media">{this.state.leanBodyWeight} кг</span></p>
-                                </div>
-                                }
-                                </Col>
-                            </Row>
-                            : null}
-                            <FormItem>
-                                <Button icon="colc" type="primary" htmlType="submit">Рассчитать</Button>
-                            </FormItem>
-                        </Form>
-                    </Col>
-                    <Col span={3}></Col>
-                </Row>
+                                {this.state.calcVisible ?
+                                <Row getter={16}>
+                                    <Col span={24}>
+                                    {this.state.message != null &&
+                                        this.state.message.length !=0 ?
+                                        <p><span className="text-exercises_media">{this.state.message}</span></p>
+                                    :
+                                    <div>
+                                        <p>Процент жира в организме: <span className="text-exercises_media">{this.state.bodyFatPercentage}%</span></p>
+                                        <p>Масса жира: <span className="text-exercises_media">{this.state.fatMass} кг</span></p>
+                                        <p>Скудная масса тела: <span className="text-exercises_media">{this.state.leanBodyWeight} кг</span></p>
+                                    </div>
+                                    }
+                                    </Col>
+                                </Row>
+                                : null}
+                                <FormItem>
+                                    <Button icon="colc" type="primary" htmlType="submit">Рассчитать</Button>
+                                </FormItem>
+                            </Form>
+                        </Col>
+                        <Col span={3}></Col>
+                    </Row>
+                </div>
             </div>
         );
     }

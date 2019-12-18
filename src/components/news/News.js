@@ -19,6 +19,7 @@ class News extends Component {
 
             commentsList: [],
             isLoadComments: false,
+            username: null,
 
             isLoading: true,
             serverError: false,
@@ -141,6 +142,9 @@ class News extends Component {
 
 
     render() {   
+        if(this.state.isLoading) {
+            return <div className="content-div"><LoadingIndicator /></div>;
+        }
         if(this.state.notFound) {
             return <NotFound />;
         }
@@ -149,32 +153,24 @@ class News extends Component {
         }
 
         
-        const imageBase64 = "data:image/png;base64, "+ this.state.base64image;
+        const styleL = {backgroundImage: "url('data:image/png;base64, "+ this.state.base64image+"')", height: '40em', backgroundSize: 'cover'};
+        // const imageBase64 = "data:image/png;base64, "+ this.state.base64image;
 
         return (
             <div>
-                <div className="breadcrumb-div">
-                    <Breadcrumb>
-                        {this.state.id ?
-                        <Breadcrumb.Item><Link to={'/news/'+this.state.id}>Список программ тренировок</Link></Breadcrumb.Item>
-                        : null}
-                    </Breadcrumb>
-                </div>
                 <div className="content-div">
-                    {this.state.isLoading ?
-                        <LoadingIndicator/>
-                    :
                     <Row  gutter={[16, 16]}>
                         <Col span={24} className="borderBottomDotted">
                             <h2>{this.state.name}</h2>
                         </Col>
                         <Col span={24} className="borderBottomDotted">
-                            <img src={imageBase64} height={400} alt="Red dot" />
+                            <div style={styleL}></div>
+                            {/* <img src={imageBase64} height={400} alt="Red dot" /> */}
                         </Col>
                         <Col span={24}>
                             <p className="whiteSpace">{this.state.description}</p>
                         </Col>
-
+                        {this.state.username ?
                         <Col span={24}>
                             {this.state.isLoadComments ?
                             <LoadingIndicator/>
@@ -185,9 +181,8 @@ class News extends Component {
                                 saveComments={this.saveComments} />
                             }
                         </Col>
-                        
+                        : null}
                     </Row>
-                    }
                 </div>
             </div>
     );
