@@ -294,16 +294,18 @@ class TrainingProgramDetails extends Component {
                     :
                     <div>
                         <Row  gutter={[16, 16]}>
-                            <Col md={18}>
+                            <Col md={20}>
                                 <h2>Программа тренировок</h2>
                                 <p>Программа тренировок: <span>{this.state.name}</span></p>
-                                <p>Описание: <span className="whiteSpace">{this.state.description}</span></p>
-                                <p>Количество дней: <span>{this.state.durationDays}</span></p>
                             </Col>
-                            <Col md={6}>
+                            <Col md={4}>
                                 <div className="textRight">
                                     <Link to={'/trainingprogram/edit/'+ this.state.id}><Button type="primary"><Icon type="edit" /> Редактировать</Button></Link>
                                 </div>
+                            </Col>
+                            <Col md={24}>
+                                <p>Описание: <span className="whiteSpace">{this.state.description}</span></p>
+                                <p>Количество дней: <span>{this.state.durationDays}</span></p>
                             </Col>
                         </Row>
                         <Row gutter={[0, 40]}>

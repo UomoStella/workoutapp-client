@@ -176,7 +176,9 @@ class TrainingProgramAll extends Component {
                         </Col>
                         <Col md={4}>
                             <div style={{textAlign: 'right'}}>
-                                <Button type="primary"><Link to={'/trainingprogram/edit'}>Добавить программу</Link></Button> 
+                                <Link to={'/trainingprogram/edit'}>
+                                    <Button type="primary" icon="plus"> Добавить программу</Button>
+                                </Link> 
                             </div>
                         </Col>
                     </Row>

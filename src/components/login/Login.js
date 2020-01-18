@@ -13,7 +13,7 @@ class Login extends Component {
         return (
             <div className="content-div">
                 <div className="login-container">
-                    <h1 className="page-title">Login</h1>
+                    <h1 className="page-title">Вход в систему</h1>
                     <div className="login-content">
                         <AntWrappedLoginForm handleMessage={this.props.handleMessage} onLogin={this.props.onLogin} />
                     </div>

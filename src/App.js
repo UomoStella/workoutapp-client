@@ -8,7 +8,7 @@ import Profile from './components/profile/Profile';
 import Exercises from './components/exercises/edit/Exercises';
 import NotFound from './error/NotFound';
 import LoadingIndicator from './components/LoadingIndicator';
-import { getCurrentUser } from './until/APIUtils';
+import { getCurrentUser, logout } from './until/APIUtils';
 import Signup from './components/signup/Signup';
 import { Layout, notification } from 'antd';
 import { ACCESS_TOKEN } from './constants';
@@ -91,25 +91,28 @@ class App extends Component {
         message: 'Сообщение',
         description: "Вы успешно вошли в учетную запись.",
       });
-      this.props.history.push("/");
+    
+      window.location.href = "/";
 
-      this.loadCurrentUser();
+      // this.loadCurrentUser();
    }
 
   handleLogout(redirectTo="/", notificationType="success", description="Вы успешно вышли с учетной записи.") {
     localStorage.removeItem(ACCESS_TOKEN);
+    window.location.href = redirectTo;
 
-    this.setState({
-      currentUser: null,
-      isAuthenticated: false
-    });
 
-    this.props.history.push(redirectTo);
+    // this.setState({
+    //   currentUser: null,
+    //   isAuthenticated: false
+    // });
+
+    // this.props.history.push(redirectTo);
     
-    notification[notificationType]({
-      message: 'Сообщение',
-      description: description,
-    });
+    // notification[notificationType]({
+    //   message: 'Сообщение',
+    //   description: description,
+    // });
   }
 
   handleMessage(redirectTo="/", notificationType="success", description="Ошибка.") {
