@@ -1,0 +1,24 @@
+.searchInput {
+    max-width: 250px;
+    margin: 5px;
+}
+
+.searchInputTitle{
+    font-weight: bold;
+    font-size: 1em;
+  }
+
+  .actionList{
+    position: relative;
+    display: inline-block;
+    padding: 0 8px;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+.subtitle  {
+    font-size: 1.1rem;
+  }

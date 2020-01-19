@@ -36,7 +36,9 @@ import RationView from './components/recipe/view/RationView';
 import Calculator from './components/calc/Calculator';
 import Landing from './components/landing/Landing';
 import News from './components/news/News';
-
+import ForumThemeEdit from './components/forumT/ForumThemeEdit';
+import ForumThemes from './components/forumT/ForumThemes';
+import ForumComments from './components/forumT/ForumComments';
 
 
 
@@ -252,6 +254,17 @@ class App extends Component {
                 <Route path="/news/:newsid" render={(props) => <News {...props}/>}/>
                 
 
+{/* ФОРУМ */}
+                <Route path="/forum/theme/edit/:themeId?" render={(props) => 
+                    <ForumThemeEdit handleMessage={this.handleMessage} 
+                          handleLogout={this.handleLogout}  {...props}/>}></Route>
+                <Route path="/forum/themes" render={(props) => 
+                    <ForumThemes  {...props}/>}></Route>
+                
+                <Route path="/forum/theme/:themeId" render={(props) => 
+                    <ForumComments  {...props}/>}></Route>
+                
+
                 <Route component={NotFound}></Route>      
                 </Switch>
             </Col>
@@ -268,4 +281,5 @@ class App extends Component {
 }
 
 export default withRouter(App);
+
 

@@ -69,6 +69,11 @@ class AppHeader extends Component {
             </Menu.Item>,
 
               <SubMenu title={<span className="submenu-title-wrapper"><Icon type="user"/></span>} onClick={this.handleMenuClick}>
+                <Menu.Item key="/forum/themes">
+                  <Link to={'/forum/themes'}>
+                      <span>Форум</span>
+                  </Link>
+                </Menu.Item>
                 <Menu.Item key="/users/test">
                   <Link to={'/users/' +this.props.currentUser.username}>
                       <span>Профиль</span>
